@@ -14,6 +14,14 @@ const COOKIE = 'alpiki_sid';
 class HttpError extends Error { constructor(status, code, extra) { super(code); this.status = status; this.code = code; this.extra = extra; } }
 const nowIso = () => new Date().toISOString();
 
+/** Human-readable cause of a database failure, with connection strings and passwords removed. */
+export function dbFailureReason(e, config) {
+  if (!config.databaseUrl) return 'DATABASE_URL is not set: connect a Neon database to this project (Storage → Connect Project) and redeploy.';
+  let m = String(e?.message || e || 'unknown error').replace(/postgres(ql)?:\/\/\S+/gi, '<url>');
+  if (config.databaseUrl) { try { const u = new URL(config.databaseUrl); if (u.password) m = m.split(decodeURIComponent(u.password)).join('***'); } catch (_) {} }
+  return (e?.code ? e.code + ': ' : '') + m.slice(0, 300);
+}
+
 export const SECURITY_HEADERS = {
   'Content-Security-Policy': "default-src 'self'; img-src 'self' data: blob:; style-src 'self' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; script-src 'self'; connect-src 'self'; frame-ancestors 'none'; base-uri 'none'; form-action 'self'; object-src 'none'",
   'X-Content-Type-Options': 'nosniff',
@@ -424,7 +432,13 @@ export function createApp({ db: dbOrPromise, config, serveStatic = true }) {
       }
       const r = routes.find((x) => x.method === req.method && x.re.test(url.pathname));
       if (!r) throw new HttpError(404, 'not_found');
-      try { db = await (typeof dbOrPromise === 'function' ? dbOrPromise() : dbOrPromise); } catch (e) { console.error('Database unavailable:', e); throw new HttpError(503, 'database_unavailable'); }
+      try { db = await (typeof dbOrPromise === 'function' ? dbOrPromise() : dbOrPromise); }
+      catch (e) {
+        console.error('Database unavailable:', e);
+        // /api/health explains why (without secrets) so the owner can fix the hosting settings.
+        if (url.pathname === '/api/health') throw new HttpError(503, 'database_unavailable', { reason: dbFailureReason(e, config) });
+        throw new HttpError(503, 'database_unavailable');
+      }
       const ctx = { req, res, url, ip, params: url.pathname.match(r.re).groups || {}, user: await currentUser(req) };
       const out = await r.handler(ctx);
       if (out && out.raw) {

@@ -290,6 +290,30 @@ test('database outage returns a clear 503, not a crash', async () => {
     handler({ method: 'GET', url: '/api/auth/session', headers: { host: 'x' }, socket: {} }, res);
   });
   assert.equal(r.status, 503); assert.equal(r.body.error, 'database_unavailable');
+  assert.equal(r.body.reason, undefined, 'ordinary routes do not explain');
+  const h = await new Promise((resolve) => {
+    const res = { statusCode: 0, setHeader() {}, end(b) { resolve(JSON.parse(String(b))); } };
+    createApp({ db: () => Promise.reject(Object.assign(new Error('password authentication failed for user "neondb_owner" (secretpw)'), { code: '28P01' })), config: { ...config, databaseUrl: 'postgres://neondb_owner:secretpw@ep-x.neon.tech/neondb' }, serveStatic: false })
+      ({ method: 'GET', url: '/api/health', headers: { host: 'x' }, socket: {} }, res);
+  });
+  assert.match(h.reason, /^28P01: password authentication failed/);
+  assert.ok(!h.reason.includes('secretpw'), 'password is never shown');
+  const none = await new Promise((resolve) => {
+    const res = { statusCode: 0, setHeader() {}, end(b) { resolve(JSON.parse(String(b))); } };
+    createApp({ db: () => Promise.reject(new Error('DATABASE_URL is not set')), config: { ...config, databaseUrl: '' }, serveStatic: false })
+      ({ method: 'GET', url: '/api/index?__p=/api/health', headers: { host: 'x' }, socket: {} }, res);
+  });
+  assert.match(none.reason, /DATABASE_URL is not set/);
+});
+
+test('a database URL with a custom Neon prefix is found', async () => {
+  const keep = { ...process.env };
+  for (const k of Object.keys(process.env)) if (/DATABASE_URL|POSTGRES_URL/.test(k)) delete process.env[k];
+  process.env.STORAGE_DATABASE_URL = 'postgres://a:b@ep-y.neon.tech/db';
+  const { config: c } = await import('../src/config.js?prefix-test');
+  assert.equal(c.databaseUrl, 'postgres://a:b@ep-y.neon.tech/db');
+  for (const k of Object.keys(process.env)) delete process.env[k];
+  Object.assign(process.env, keep);
 });
 
 test('search input cannot inject SQL', async () => {
