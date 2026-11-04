@@ -254,6 +254,42 @@ test('parallel cold starts apply migrations and import only once', async () => {
   await Promise.all(dbs.map((d) => d.close()));
 });
 
+test('first start over a slow network link finishes quickly (cross-region latency)', async () => {
+  // A TCP proxy adds 40 ms in each direction (~80 ms round trip, worse than Vercel fra1 → Neon us-east).
+  const net = await import('node:net');
+  const target = new URL(cluster.url);
+  const proxy = net.createServer((client) => {
+    const up = net.connect(Number(target.port), target.hostname);
+    const delayed = (from, to) => { let chain = Promise.resolve(); from.on('data', (d) => { chain = chain.then(() => new Promise((r) => setTimeout(() => { to.write(d); r(); }, 40))); }); from.on('close', () => chain.then(() => to.destroy())); from.on('error', () => {}); };
+    delayed(client, up); delayed(up, client);
+  });
+  await new Promise((r) => proxy.listen(0, '127.0.0.1', r));
+  const fresh = new URL(await freshDatabase(cluster.url, 'alpiki_latency_test'));
+  fresh.port = String(proxy.address().port);
+  const t0 = Date.now();
+  const slow = await openDb(fresh.toString());
+  const stats = await seed(slow);
+  const ms = Date.now() - t0;
+  assert.deepEqual(stats, { units: 118, persons: 104, links: 135, document: 1 });
+  assert.equal((await slow.get('SELECT COUNT(*) n FROM identifiers')).n, 113);
+  assert.ok(ms < 5000, `first start took ${ms} ms`);
+  const nextId = (await slow.get("INSERT INTO persons (kind, name_ka, name_en) VALUES ('person', 'x', 'x') RETURNING id")).id;
+  assert.equal(nextId, 105, 'identity sequence continues after the bulk import');
+  await slow.close(); proxy.close();
+});
+
+test('a stuck lock produces a clear error instead of hanging', async () => {
+  const url = await freshDatabase(cluster.url, 'alpiki_lock_test');
+  const holder = new (await import('../src/pg.js')).Db(url);
+  await holder.exec('CREATE TABLE IF NOT EXISTS schema_version (version INTEGER NOT NULL)');
+  const blocking = holder.tx(async (t) => { await t.run('SELECT pg_advisory_xact_lock(7244110)'); await new Promise((r) => setTimeout(r, 12000)); });
+  await new Promise((r) => setTimeout(r, 200));
+  const t0 = Date.now();
+  await assert.rejects(openDb(url), (e) => e.code === '55P03'); // lock_not_available
+  assert.ok(Date.now() - t0 < 12000);
+  await blocking; await holder.close();
+});
+
 test('super-admin environment setting only grants the role and a first code', async () => {
   const id = (await db.get('SELECT person_id FROM identifiers WHERE value = ?', ADMIN_PID)).person_id;
   const hashBefore = (await db.get('SELECT code_hash FROM persons WHERE id = ?', id)).code_hash;

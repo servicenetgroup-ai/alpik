@@ -101,6 +101,8 @@ export async function openDb(url) {
   if (!url) throw new Error('DATABASE_URL is not set');
   const db = new Db(url);
   await db.tx(async (t) => {
+    // Never wait forever behind another (possibly frozen) instance.
+    await t.exec("SET LOCAL lock_timeout = '10s'; SET LOCAL statement_timeout = '15s'");
     await t.run('SELECT pg_advisory_xact_lock(7244110)');
     await t.exec('CREATE TABLE IF NOT EXISTS schema_version (version INTEGER NOT NULL)');
     const v = (await t.get('SELECT COALESCE(MAX(version), 0) AS v FROM schema_version')).v;

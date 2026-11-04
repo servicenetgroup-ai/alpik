@@ -2,6 +2,7 @@
 // Idempotent: only adds what is missing and never overwrites existing rows, roles or signatures.
 // After a successful import a marker in `meta` makes later cold starts skip the work.
 import { normId } from './db.js';
+import { pgArray } from './pg.js';
 import { DOCUMENT_SLUG, DOCUMENT_CONTENT } from './document-content.js';
 import REGISTRY from './registry.js';
 
@@ -20,7 +21,55 @@ export async function seed(db, { force = false } = {}) {
   const stats = { units: 0, persons: 0, links: 0, document: 0 };
   if (!force && await db.get('SELECT 1 FROM meta WHERE key = ?', MARKER)) return stats;
   return db.tx(async (t) => {
+    await t.exec("SET LOCAL lock_timeout = '10s'; SET LOCAL statement_timeout = '15s'");
     await t.run('SELECT pg_advisory_xact_lock(7244111)');
+    if (await t.get('SELECT 1 FROM meta WHERE key = ?', MARKER) && !force) return stats;
+    const empty = (await t.get('SELECT (SELECT COUNT(*) FROM units) + (SELECT COUNT(*) FROM persons) AS n')).n === 0;
+    if (empty) await bulkImport(t, stats); else await incrementalImport(t, stats);
+    if (!await t.get('SELECT id FROM documents WHERE slug = ?', DOCUMENT_SLUG)) {
+      await t.run('INSERT INTO documents (slug, content) VALUES (?, ?)', DOCUMENT_SLUG, JSON.stringify(DOCUMENT_CONTENT));
+      stats.document = 1;
+    }
+    await t.run('INSERT INTO meta (key, value) VALUES (?, ?) ON CONFLICT (key) DO NOTHING', MARKER, new Date().toISOString());
+    return stats;
+  });
+}
+
+/** First import into an empty database: a handful of set-based statements (fast over a slow link). */
+async function bulkImport(t, stats) {
+  const persons = [], byIdent = new Map(), idents = [], links = [];
+  REGISTRY.forEach((u, ui) => {
+    for (const o of u.owners) {
+      const values = o.ids.map((i) => ({ kind: i.kind, value: normId(i.value) })).filter((i) => i.value);
+      let pi = values.map((v) => byIdent.get(v.value)).find((x) => x != null);
+      if (pi == null) {
+        const fix = values.map((v) => NAME_FIX[v.value]).find(Boolean) || {};
+        pi = persons.length + 1;
+        persons.push({ id: pi, kind: o.type, ka: fix.ka || o.name_ka, en: fix.en || o.name_en });
+      }
+      for (const v of values) if (!byIdent.has(v.value)) { byIdent.set(v.value, pi); idents.push({ value: v.value, kind: v.kind, pid: pi }); }
+      if (!links.some((l) => l.u === ui + 1 && l.p === pi)) links.push({ u: ui + 1, p: pi });
+    }
+  });
+  await t.run(`INSERT INTO units (id, num, code, type, label, floor, area) OVERRIDING SYSTEM VALUE
+    SELECT * FROM unnest(?::bigint[], ?::int[], ?::text[], ?::text[], ?::text[], ?::text[], ?::float8[])`,
+    pgArray(REGISTRY.map((_, i) => i + 1)), pgArray(REGISTRY.map((u) => u.num)), pgArray(REGISTRY.map((u) => u.code)),
+    pgArray(REGISTRY.map((u) => u.type)), pgArray(REGISTRY.map((u) => u.label)), pgArray(REGISTRY.map((u) => u.floor)), pgArray(REGISTRY.map((u) => u.area)));
+  await t.run(`INSERT INTO persons (id, kind, name_ka, name_en) OVERRIDING SYSTEM VALUE
+    SELECT * FROM unnest(?::bigint[], ?::text[], ?::text[], ?::text[])`,
+    pgArray(persons.map((p) => p.id)), pgArray(persons.map((p) => p.kind)), pgArray(persons.map((p) => p.ka)), pgArray(persons.map((p) => p.en)));
+  await t.run(`INSERT INTO identifiers (value, kind, person_id) SELECT * FROM unnest(?::text[], ?::text[], ?::bigint[])`,
+    pgArray(idents.map((i) => i.value)), pgArray(idents.map((i) => i.kind)), pgArray(idents.map((i) => i.pid)));
+  await t.run(`INSERT INTO unit_owners (unit_id, person_id) SELECT * FROM unnest(?::bigint[], ?::bigint[])`,
+    pgArray(links.map((l) => l.u)), pgArray(links.map((l) => l.p)));
+  await t.exec(`SELECT setval(pg_get_serial_sequence('units', 'id'), (SELECT MAX(id) FROM units));
+    SELECT setval(pg_get_serial_sequence('persons', 'id'), (SELECT MAX(id) FROM persons));`);
+  stats.units = REGISTRY.length; stats.persons = persons.length; stats.links = links.length;
+}
+
+/** Adds only what is missing to a database that already has data. */
+async function incrementalImport(t, stats) {
+  {
     const units = new Map((await t.all('SELECT id, code FROM units')).map((u) => [u.code, u.id]));
     const idents = new Map((await t.all('SELECT value, person_id FROM identifiers')).map((i) => [i.value, i.person_id]));
     const links = new Set((await t.all('SELECT unit_id, person_id FROM unit_owners')).map((l) => l.unit_id + ':' + l.person_id));
@@ -44,11 +93,5 @@ export async function seed(db, { force = false } = {}) {
         if (!links.has(key)) { await t.run('INSERT INTO unit_owners (unit_id, person_id) VALUES (?, ?) ON CONFLICT DO NOTHING', unitId, personId); links.add(key); stats.links++; }
       }
     }
-    if (!await t.get('SELECT id FROM documents WHERE slug = ?', DOCUMENT_SLUG)) {
-      await t.run('INSERT INTO documents (slug, content) VALUES (?, ?)', DOCUMENT_SLUG, JSON.stringify(DOCUMENT_CONTENT));
-      stats.document = 1;
-    }
-    await t.run('INSERT INTO meta (key, value) VALUES (?, ?) ON CONFLICT (key) DO NOTHING', MARKER, new Date().toISOString());
-    return stats;
-  });
+  }
 }

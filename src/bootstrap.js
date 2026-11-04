@@ -9,10 +9,17 @@ let pending = null;
 export function getDb(config) {
   if (!pending) {
     pending = (async () => {
-      const db = await openDb(config.databaseUrl);
-      await seed(db);
-      await applySuperadminEnv(db, config);
-      return db;
+      let stage = 'connect + migrations', db;
+      try {
+        db = await openDb(config.databaseUrl);
+        stage = 'registry import'; await seed(db);
+        stage = 'super admin setup'; await applySuperadminEnv(db, config);
+        return db;
+      } catch (e) {
+        db?.close().catch(() => {});
+        e.message = `[${stage}] ${e.message}`;
+        throw e;
+      }
     })();
     pending.catch(() => { pending = null; });
   }

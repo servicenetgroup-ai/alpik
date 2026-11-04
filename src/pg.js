@@ -5,6 +5,9 @@ import net from 'node:net';
 import tls from 'node:tls';
 import crypto from 'node:crypto';
 
+/** Text-format PostgreSQL array literal, for passing arrays as one parameter (… = ANY(?), unnest(?::text[])). */
+export const pgArray = (arr) => '{' + arr.map((v) => (v === null || v === undefined ? 'NULL' : '"' + String(v).replace(/\\/g, '\\\\').replace(/"/g, '\\"') + '"')).join(',') + '}';
+
 export class PgError extends Error {
   constructor(fields) {
     super(fields.M || 'PostgreSQL error');
@@ -40,13 +43,26 @@ const msg = (type, ...parts) => { const body = Buffer.concat(parts); return Buff
 export class Connection {
   constructor(opts) { this.opts = opts; this.buf = Buffer.alloc(0); this.waiters = []; this.queue = []; this.dead = false; }
 
-  static async connect(url, { timeoutMs = 10000 } = {}) {
+  static async connect(url, { timeoutMs = 10000, queryTimeoutMs = 15000 } = {}) {
     const c = new Connection(parseUrl(url));
-    await Promise.race([
-      c.#open(),
-      new Promise((_, rej) => setTimeout(() => rej(new Error('PostgreSQL connection timed out')), timeoutMs).unref()),
-    ]).catch((e) => { c.destroy(); throw e; });
+    c.queryTimeoutMs = queryTimeoutMs;
+    c.stage = 'tcp';
+    let timer;
+    try {
+      await Promise.race([
+        c.#open(),
+        new Promise((_, rej) => { timer = setTimeout(() => rej(new Error(`PostgreSQL connection timed out (stage: ${c.stage}, host: ${c.opts.host})`)), timeoutMs); }),
+      ]);
+    } catch (e) { c.destroy(); throw e; }
+    finally { clearTimeout(timer); }
+    c.stage = 'ready';
     return c;
+  }
+
+  /** Fails the connection if a reply takes longer than queryTimeoutMs (a frozen peer must not hang the app). */
+  #guard() {
+    const t = setTimeout(() => { this.#fail(new Error(`PostgreSQL query timed out after ${this.queryTimeoutMs} ms`)); this.sock?.destroy(); }, this.queryTimeoutMs);
+    return () => clearTimeout(t);
   }
 
   async #open() {
@@ -55,9 +71,11 @@ export class Connection {
     sock.setNoDelay(true);
     await new Promise((res, rej) => { sock.once('connect', res); sock.once('error', rej); });
     if (o.ssl) {
+      this.stage = 'ssl-request';
       sock.write(Buffer.concat([int32(8), int32(80877103)]));
       const answer = await new Promise((res, rej) => { sock.once('data', (d) => res(d.toString('latin1', 0, 1))); sock.once('error', rej); });
       if (answer !== 'S') throw new Error('Server does not support SSL');
+      this.stage = 'tls-handshake';
       sock = tls.connect({ socket: sock, servername: net.isIP(o.host) ? undefined : o.host, rejectUnauthorized: o.rejectUnauthorized });
       await new Promise((res, rej) => { sock.once('secureConnect', res); sock.once('error', rej); });
     }
@@ -69,7 +87,9 @@ export class Connection {
     sock.write(Buffer.concat([
       (() => { const body = Buffer.concat([int32(196608), cstr('user'), cstr(o.user), cstr('database'), cstr(o.database), cstr('application_name'), cstr('alpiki-consent'), cstr('client_encoding'), cstr('UTF8'), Buffer.from([0])]); return Buffer.concat([int32(body.length + 4), body]); })(),
     ]));
+    this.stage = 'authentication';
     await this.#authenticate();
+    this.stage = 'startup';
     for (;;) { const m = await this.#next(); if (m.type === 'Z') break; if (m.type === 'E') throw new PgError(m.fields); }
   }
 
@@ -165,14 +185,15 @@ export class Connection {
       msg('S'),
     ]));
     let fields = [], rows = [], rowCount = 0, error = null;
-    for (;;) {
+    const done = this.#guard();
+    try { for (;;) {
       const m = await this.#next();
       if (m.type === 'T') fields = parseRowDescription(m.body);
       else if (m.type === 'D') rows.push(parseDataRow(m.body, fields));
       else if (m.type === 'C') { const n = /(\d+)$/.exec(m.body.toString('utf8', 0, m.body.length - 1)); rowCount = n ? Number(n[1]) : 0; }
       else if (m.type === 'E') error = new PgError(m.fields);
       else if (m.type === 'Z') { this.txStatus = String.fromCharCode(m.body[0]); break; }
-    }
+    } } finally { done(); }
     if (error) throw error;
     return { rows, rowCount };
   }
@@ -182,11 +203,12 @@ export class Connection {
     if (this.dead) throw this.error;
     this.sock.write(msg('Q', cstr(text)));
     let error = null;
-    for (;;) {
+    const done = this.#guard();
+    try { for (;;) {
       const m = await this.#next();
       if (m.type === 'E') error = new PgError(m.fields);
       else if (m.type === 'Z') { this.txStatus = String.fromCharCode(m.body[0]); break; }
-    }
+    } } finally { done(); }
     if (error) throw error;
   }
 
