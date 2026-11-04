@@ -9,9 +9,11 @@ const OUT = path.resolve(process.argv[2] || 'e2e-out');
 fs.mkdirSync(OUT, { recursive: true });
 const ROOT = new URL('../../', import.meta.url).pathname;
 const tmp = fs.mkdtempSync(path.join(os.tmpdir(), 'alpiki-e2e-'));
-const DB = path.join(tmp, 'e2e.db');
+const { startCluster, freshDatabase } = await import('../helpers/pgcluster.js');
+const cluster = await startCluster();
+const DATABASE_URL = await freshDatabase(cluster.url, 'alpiki_e2e');
 const PORT = 3990, CDP_PORT = 9333, BASE = `http://127.0.0.1:${PORT}`;
-const env = { ...process.env, DB_PATH: DB, PORT: String(PORT), HOST: '127.0.0.1', SECURE_COOKIES: '0' };
+const env = { ...process.env, DATABASE_URL, PORT: String(PORT), HOST: '127.0.0.1', SECURE_COOKIES: '0' };
 const node = (args) => execFileSync(process.execPath, ['--disable-warning=ExperimentalWarning', ...args], { cwd: ROOT, env }).toString();
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
 const results = [];
@@ -182,9 +184,12 @@ try {
   check('e2e run', false, e.message);
 } finally {
   // database still holds exactly the 2 signatures made through the browser
-  const n = node(['-e', `const {DatabaseSync}=require('node:sqlite');const d=new DatabaseSync(${JSON.stringify(DB)});console.log(d.prepare('select count(*) n from signatures').get().n)`]).trim();
+  const { Db } = await import('../../src/pg.js');
+  const pdb = new Db(DATABASE_URL);
+  const n = String((await pdb.get('SELECT COUNT(*) n FROM signatures')).n);
+  await pdb.close();
   check('database holds the 2 browser signatures', n === '2', n);
-  ws.close(); chrome.kill(); server.kill();
+  ws.close(); chrome.kill(); server.kill(); cluster.stop();
   fs.writeFileSync(path.join(OUT, 'results.json'), JSON.stringify(results, null, 2));
   const failed = results.filter((r) => !r.ok).length;
   console.log(`\n${results.length - failed}/${results.length} passed`);

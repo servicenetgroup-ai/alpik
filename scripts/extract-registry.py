@@ -1,4 +1,4 @@
-# One-off: converts the registry embedded in the original HTML into src/registry.json
+# One-off: converts the registry embedded in the original HTML into src/registry.js
 import re, json, sys
 src = open(sys.argv[1], encoding='utf-8').read()
 rows = re.findall(r'\{ num: (\d+), code: "([^"]+)", unit: "([^"]+)", owner: "((?:[^"\\]|\\.)+)", idInfo: "([^"]+)" \}', src)
@@ -30,7 +30,7 @@ for num, code, unit, owner, idinfo in rows:
             'type': 'company' if is_company else 'person',
             'ids': ids})
     units.append({'num': int(num), 'code': code, 'type': typ, 'label': label, 'floor': floor, 'area': area, 'owners': owners})
-json.dump(units, open('src/registry.json', 'w', encoding='utf-8'), ensure_ascii=False, indent=1)
+open('src/registry.js','w',encoding='utf-8').write('// Public Registry extract No. 882026185899 (06.03.2026), units not owned by Red-Co LLC.\nexport default ' + json.dumps(units, ensure_ascii=False, indent=1) + ';\n')
 print(len(units), sum(len(u['owners']) for u in units))
 for u in units:
     if len(u['owners']) > 1: print(u['num'], [(o['name_en'], [i['value'] for i in o['ids']]) for o in u['owners']])

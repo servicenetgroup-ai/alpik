@@ -1,17 +1,17 @@
 {
   "name": "alpiki-consent",
-  "version": "2.0.0",
+  "version": "2.1.0",
   "private": true,
   "description": "HOA Alpiki consent registry: member sign-in, e-signatures, admin console",
   "type": "module",
   "engines": {
-    "node": ">=22.13"
+    "node": "22.x"
   },
   "scripts": {
-    "start": "node --disable-warning=ExperimentalWarning src/server.js",
-    "seed": "node --disable-warning=ExperimentalWarning scripts/seed.js",
-    "create-admin": "node --disable-warning=ExperimentalWarning scripts/create-admin.js",
-    "test": "node --disable-warning=ExperimentalWarning --test test/*.test.js",
-    "e2e": "node --disable-warning=ExperimentalWarning test/e2e/browser.mjs docs/screenshots"
+    "start": "node src/server.js",
+    "seed": "node scripts/seed.js",
+    "create-admin": "node scripts/create-admin.js",
+    "test": "node --test --test-concurrency=1 test/*.test.js",
+    "e2e": "node test/e2e/browser.mjs docs/screenshots"
   }
 }

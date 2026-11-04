@@ -2,8 +2,6 @@ import { test, before, after } from 'node:test';
 import assert from 'node:assert/strict';
 import http from 'node:http';
 import fs from 'node:fs';
-import os from 'node:os';
-import path from 'node:path';
 import zlib from 'node:zlib';
 import crypto from 'node:crypto';
 import { openDb } from '../src/db.js';
@@ -11,13 +9,15 @@ import { seed } from '../src/seed.js';
 import { createApp } from '../src/app.js';
 import { config as baseConfig } from '../src/config.js';
 import { generateAccessCode, normCode, hashSecret } from '../src/security.js';
+import { applySuperadminEnv } from '../src/bootstrap.js';
+import { startCluster, freshDatabase } from './helpers/pgcluster.js';
 
 const ADMIN_PID = '01020003679';   // Aleksi Simonishvili, unit 29ა (co-owned with Ia Khidasheli)
 const A_PID = '01024024038';       // Khatuna Danelia: units 33ა, 40ა, parking 30
 const B_PID = '61001021571';       // Natia Tkhilaishvili: units 3, 6ა
 const PASSPORT_PID = 'MP4433152';  // Iuri Kolpak, passport number (second identifier)
 
-let tmp, db, server, base, adminCode;
+let cluster, dbUrl, db, server, base, adminCode;
 const config = { ...baseConfig, secureCookies: false, loginMaxPerIp: 1000 };
 
 function png(w, h, ink) {
@@ -42,25 +42,27 @@ async function call(method, url, { body, cookie, headers = {}, raw } = {}) {
 const login = async (pid, code) => call('POST', '/api/auth/login', { body: { personalId: pid, accessCode: code } });
 
 before(async () => {
-  tmp = fs.mkdtempSync(path.join(os.tmpdir(), 'alpiki-'));
-  db = openDb(path.join(tmp, 'test.db'));
-  seed(db);
-  // Super admin is granted only by the CLI path (direct DB access), as in production.
+  cluster = await startCluster();
+  dbUrl = await freshDatabase(cluster.url, 'alpiki_api_test');
+  db = await openDb(dbUrl);
+  await seed(db);
+  // Super admin is granted only outside the website (environment / CLI with database access).
   adminCode = generateAccessCode();
-  db.prepare("UPDATE persons SET role = 'superadmin', code_hash = ? WHERE id = (SELECT person_id FROM identifiers WHERE value = ?)").run(hashSecret(normCode(adminCode)), ADMIN_PID);
+  await applySuperadminEnv(db, { superadminId: ADMIN_PID, superadminInitialCode: adminCode });
   server = http.createServer(createApp({ db, config }));
   await new Promise(r => server.listen(0, '127.0.0.1', r));
   base = `http://127.0.0.1:${server.address().port}`;
 });
-after(() => { server.close(); db.close(); fs.rmSync(tmp, { recursive: true, force: true }); });
+after(async () => { server.close(); await db.close(); cluster.stop(); });
 
-let admin, memberA, memberB, codeA, codeB, sigIdA;
+let admin, admin2, memberA, memberB, codeA, codeB, sigIdA;
 
-test('registry import: 118 units, 104 owners, idempotent re-import', () => {
-  assert.equal(db.prepare('SELECT COUNT(*) n FROM units').get().n, 118);
-  assert.equal(db.prepare('SELECT COUNT(*) n FROM persons').get().n, 104);
-  assert.deepEqual(seed(db), { units: 0, persons: 0, links: 0, document: 0 });
-  assert.equal(db.prepare('SELECT COUNT(*) n FROM unit_owners').get().n, 135);
+test('registry import: 118 units, 104 owners, idempotent re-import', async () => {
+  assert.equal((await db.get('SELECT COUNT(*) n FROM units')).n, 118);
+  assert.equal((await db.get('SELECT COUNT(*) n FROM persons')).n, 104);
+  assert.deepEqual(await seed(db), { units: 0, persons: 0, links: 0, document: 0 });
+  assert.deepEqual(await seed(db, { force: true }), { units: 0, persons: 0, links: 0, document: 0 }, 'full re-import adds nothing');
+  assert.equal((await db.get('SELECT COUNT(*) n FROM unit_owners')).n, 135);
 });
 
 test('login requires an issued access code; errors do not reveal whether the ID exists', async () => {
@@ -83,7 +85,7 @@ test('super admin signs in and issues access codes', async () => {
   codeA = (await call('POST', `/api/admin/persons/${idA}/access-code`, { cookie: admin })).data.code;
   codeB = (await call('POST', `/api/admin/persons/${idB}/access-code`, { cookie: admin })).data.code;
   assert.match(codeA, /^[A-Z2-9]{4}-[A-Z2-9]{4}$/);
-  const stored = db.prepare('SELECT code_hash FROM persons WHERE id = ?').get(idA).code_hash;
+  const stored = (await db.get('SELECT code_hash FROM persons WHERE id = ?', idA)).code_hash;
   assert.ok(stored.startsWith('scrypt$') && !stored.includes(normCode(codeA)), 'code stored only as a hash');
 });
 
@@ -114,9 +116,9 @@ test('signature is saved, linked to member, unit and document, and can be read b
   const r = await call('POST', '/api/me/documents/1/signatures', { cookie: memberA, body: { unitCodes: ['71.62.58.548.01.01.033ა', '71.62.58.548.01.04.030'], signedName: 'Khatuna Danelia', consent: true, image, lang: 'en' } });
   assert.equal(r.status, 200); assert.equal(r.data.signatures.length, 2);
   sigIdA = r.data.signatures[0].id;
-  const row = db.prepare('SELECT s.*, u.code FROM signatures s JOIN units u ON u.id = s.unit_id WHERE s.id = ?').get(sigIdA);
+  const row = (await db.get('SELECT s.*, u.code FROM signatures s JOIN units u ON u.id = s.unit_id WHERE s.id = ?', sigIdA));
   assert.equal(row.code, '71.62.58.548.01.01.033ა'); assert.equal(row.document_id, 1);
-  assert.equal(row.person_id, db.prepare('SELECT person_id FROM identifiers WHERE value = ?').get(A_PID).person_id);
+  assert.equal(row.person_id, (await db.get('SELECT person_id FROM identifiers WHERE value = ?', A_PID)).person_id);
   const img = await call('GET', `/api/me/signatures/${sigIdA}/image`, { cookie: memberA, raw: true });
   assert.equal(img.status, 200); assert.equal(img.headers.get('content-type'), 'image/png');
   assert.equal(crypto.createHash('sha256').update(img.data).digest('hex'), row.image_sha256);
@@ -127,7 +129,7 @@ test('signature is saved, linked to member, unit and document, and can be read b
 test('duplicate signatures are rejected', async () => {
   const r = await call('POST', '/api/me/documents/1/signatures', { cookie: memberA, body: { unitCodes: ['71.62.58.548.01.01.033ა'], signedName: 'Khatuna Danelia', consent: true, image: png(600, 180, true) } });
   assert.equal(r.status, 409); assert.equal(r.data.error, 'already_signed');
-  assert.equal(db.prepare('SELECT COUNT(*) n FROM signatures WHERE unit_id = (SELECT id FROM units WHERE code = ?) AND revoked_at IS NULL').get('71.62.58.548.01.01.033ა').n, 1);
+  assert.equal((await db.get('SELECT COUNT(*) n FROM signatures WHERE unit_id = (SELECT id FROM units WHERE code = ?) AND revoked_at IS NULL', '71.62.58.548.01.01.033ა')).n, 1);
 });
 
 test('signature input is validated', async () => {
@@ -169,7 +171,7 @@ test('roles cannot be changed through the API', async () => {
   assert.equal(r.status, 403);
   const self = await call('PATCH', '/api/admin/persons/' + id, { cookie: memberA, body: { role: 'superadmin' } });
   assert.equal(self.status, 403);
-  assert.equal(db.prepare('SELECT role FROM persons WHERE id = ?').get(id).role, 'member');
+  assert.equal((await db.get('SELECT role FROM persons WHERE id = ?', id)).role, 'member');
 });
 
 test('state-changing requests without the anti-CSRF header or from another origin are refused', async () => {
@@ -186,7 +188,7 @@ test('admin can revoke a signature; the member can sign again', async () => {
   assert.equal((await call('POST', `/api/admin/signatures/${sigIdA}/revoke`, { cookie: admin, body: { reason: 'Signed by mistake' } })).status, 200);
   const r = await call('POST', '/api/me/documents/1/signatures', { cookie: memberA, body: { unitCodes: ['71.62.58.548.01.01.033ა'], signedName: 'Khatuna Danelia', consent: true, image: png(600, 180, true) } });
   assert.equal(r.status, 200);
-  assert.equal(db.prepare('SELECT COUNT(*) n FROM signatures WHERE unit_id = (SELECT id FROM units WHERE code = ?)').get('71.62.58.548.01.01.033ა').n, 2, 'revoked signature is kept for the record');
+  assert.equal((await db.get('SELECT COUNT(*) n FROM signatures WHERE unit_id = (SELECT id FROM units WHERE code = ?)', '71.62.58.548.01.01.033ა')).n, 2, 'revoked signature is kept for the record');
 });
 
 test('resetting an access code ends the member\'s sessions', async () => {
@@ -206,20 +208,80 @@ test('logout ends the session', async () => {
   const r = await call('POST', '/api/auth/logout', { cookie: admin });
   assert.equal(r.status, 200);
   assert.equal((await call('GET', '/api/admin/overview', { cookie: admin })).status, 401);
+  admin2 = (await login(ADMIN_PID, adminCode)).cookie;
 });
 
-test('audit log records the important actions', () => {
-  const actions = new Set(db.prepare('SELECT action FROM audit_log').all().map(r => r.action));
+test('audit log records the important actions', async () => {
+  const actions = new Set((await db.all('SELECT action FROM audit_log')).map(r => r.action));
   for (const a of ['login', 'login_failed', 'login_locked', 'access_code_issued', 'access_code_reset', 'signature_created', 'signature_denied', 'signature_revoked', 'export_csv', 'logout']) assert.ok(actions.has(a), a);
 });
 
-test('data survives a restart (reopen + migrations + seed)', () => {
-  const file = db.prepare('PRAGMA database_list').get().file;
-  const before = db.prepare('SELECT COUNT(*) n FROM signatures').get().n;
-  const db2 = openDb(file); seed(db2);
-  assert.equal(db2.prepare('SELECT COUNT(*) n FROM signatures').get().n, before);
-  assert.equal(db2.prepare("SELECT role FROM persons WHERE id = (SELECT person_id FROM identifiers WHERE value = ?)").get(ADMIN_PID).role, 'superadmin');
-  db2.close();
+test('data survives a restart (new connection + migrations + seed)', async () => {
+  const before = (await db.get('SELECT COUNT(*) n FROM signatures')).n;
+  const db2 = await openDb(dbUrl); await seed(db2, { force: true });
+  assert.equal((await db2.get('SELECT COUNT(*) n FROM signatures')).n, before);
+  assert.equal((await db2.get('SELECT role FROM persons WHERE id = (SELECT person_id FROM identifiers WHERE value = ?)', ADMIN_PID)).role, 'superadmin');
+  assert.equal((await db2.get('SELECT MAX(version) v FROM schema_version')).v, 1);
+  await db2.close();
+});
+
+test('parallel cold starts apply migrations and import only once', async () => {
+  const url = await freshDatabase(cluster.url, 'alpiki_parallel_test');
+  const dbs = await Promise.all([1, 2, 3, 4].map(() => openDb(url)));
+  const stats = await Promise.all(dbs.map((d) => seed(d)));
+  assert.equal(stats.reduce((n, s) => n + s.units, 0), 118);
+  assert.equal((await dbs[0].get('SELECT COUNT(*) n FROM units')).n, 118);
+  assert.equal((await dbs[0].get('SELECT COUNT(*) n FROM schema_version')).n, 1);
+  await Promise.all(dbs.map((d) => d.close()));
+});
+
+test('super-admin environment setting only grants the role and a first code', async () => {
+  const id = (await db.get('SELECT person_id FROM identifiers WHERE value = ?', ADMIN_PID)).person_id;
+  const hashBefore = (await db.get('SELECT code_hash FROM persons WHERE id = ?', id)).code_hash;
+  await applySuperadminEnv(db, { superadminId: ADMIN_PID, superadminInitialCode: 'ZZZZ-9999' });
+  assert.equal((await db.get('SELECT code_hash FROM persons WHERE id = ?', id)).code_hash, hashBefore, 'existing code is not replaced from the environment');
+  assert.equal((await login(ADMIN_PID, 'ZZZZ-9999')).status, 401);
+  await applySuperadminEnv(db, { superadminId: '00000000000' });
+  assert.equal((await db.get("SELECT COUNT(*) n FROM persons WHERE role = 'superadmin'")).n, 1);
+});
+
+test('Vercel-style invocation: rewritten path and pre-parsed body', async () => {
+  const handler = createApp({ db: () => Promise.resolve(db), config, serveStatic: false });
+  const fake = (method, url, body, headers = {}) => new Promise((resolve) => {
+    const res = { statusCode: 200, headers: {}, setHeader(k, v) { this.headers[k.toLowerCase()] = v; }, end(b) { resolve({ status: this.statusCode, headers: this.headers, body: b ? JSON.parse(String(b)) : null }); } };
+    const req = { method, url, body, headers: { host: 'alpik-one.vercel.app', 'x-alpiki': '1', 'x-forwarded-for': '203.0.113.9', ...headers }, socket: {} };
+    handler(req, res);
+  });
+  const bad = await fake('POST', '/api/index?__p=/api/auth/login', { personalId: A_PID, accessCode: 'ZZZZ-ZZZA' });
+  assert.equal(bad.status, 429, 'account still locked from the previous test');
+  const sess = await fake('GET', '/api/index?__p=/api/auth/session');
+  assert.equal(sess.status, 401);
+  const nf = await fake('GET', '/api/index?__p=/api/nope');
+  assert.equal(nf.status, 404);
+  const str = await fake('POST', '/api/index?__p=/api/auth/login', 'not json');
+  assert.equal(str.status, 400);
+  const page = await fake('GET', '/');
+  assert.equal(page.status, 404, 'static files are left to Vercel');
+});
+
+test('database outage returns a clear 503, not a crash', async () => {
+  const handler = createApp({ db: () => Promise.reject(new Error('down')), config, serveStatic: false });
+  const r = await new Promise((resolve) => {
+    const res = { statusCode: 0, setHeader() {}, end(b) { resolve({ status: this.statusCode, body: JSON.parse(String(b)) }); } };
+    handler({ method: 'GET', url: '/api/auth/session', headers: { host: 'x' }, socket: {} }, res);
+  });
+  assert.equal(r.status, 503); assert.equal(r.body.error, 'database_unavailable');
+});
+
+test('search input cannot inject SQL', async () => {
+  const r = await call('GET', "/api/admin/persons?q=" + encodeURIComponent("' OR 1=1; DROP TABLE persons; --"), { cookie: admin2 });
+  assert.equal(r.status, 200); assert.equal(r.data.persons.length, 0);
+  assert.equal((await db.get('SELECT COUNT(*) n FROM persons')).n, 104);
+});
+
+test('health endpoint reports the database connection', async () => {
+  const r = await call('GET', '/api/health');
+  assert.deepEqual(r.data, { ok: true, database: 'connected' });
 });
 
 test('security headers are set', async () => {

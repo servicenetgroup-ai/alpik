@@ -72,6 +72,7 @@ ka: {
   'err.reason_required': 'მიუთითეთ მიზეზი (მინიმუმ 3 სიმბოლო).',
   'err.already_revoked': 'ხელმოწერა უკვე გაუქმებულია.',
   'err.payload_too_large': 'მონაცემები ძალიან დიდია.',
+  'err.database_unavailable': 'მონაცემთა ბაზა დროებით მიუწვდომელია. სცადეთ რამდენიმე წუთში.',
   'err.network': 'სერვერთან კავშირი ვერ დამყარდა. შეამოწმეთ ინტერნეტი.',
   'err.generic': 'რაღაც არ გამოვიდა. სცადეთ თავიდან.',
 
@@ -252,6 +253,7 @@ en: {
   'err.reason_required': 'Enter a reason (at least 3 characters).',
   'err.already_revoked': 'This signature is already revoked.',
   'err.payload_too_large': 'The data is too large.',
+  'err.database_unavailable': 'The database is temporarily unavailable. Please try again in a few minutes.',
   'err.network': 'Could not reach the server. Check your connection.',
   'err.generic': 'Something went wrong. Please try again.',
 
@@ -432,6 +434,7 @@ ru: {
   'err.reason_required': 'Укажите причину (не менее 3 символов).',
   'err.already_revoked': 'Подпись уже аннулирована.',
   'err.payload_too_large': 'Слишком большой объём данных.',
+  'err.database_unavailable': 'База данных временно недоступна. Повторите через несколько минут.',
   'err.network': 'Нет связи с сервером. Проверьте подключение.',
   'err.generic': 'Что-то пошло не так. Попробуйте ещё раз.',
 

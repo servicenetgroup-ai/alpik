@@ -1,4 +1,5 @@
-[
+// Public Registry extract No. 882026185899 (06.03.2026), units not owned by Red-Co LLC.
+export default [
  {
   "num": 1,
   "code": "71.62.58.548.01.01.001",
@@ -2720,4 +2721,4 @@
    }
   ]
  }
-]
+];
