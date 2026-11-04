@@ -7,7 +7,7 @@
   const CHAIR = { phone: '+995 577 77 44 43', email: 'lexo.simonishvili@gmail.com' };
   const MARK = '<svg viewBox="0 0 64 64" width="22" height="22" aria-hidden="true"><path d="M8 50 L27 16 L37 34 L43 24 L56 50 Z" fill="currentColor"/></svg>';
 
-  const S = { lang: 'ka', user: null, me: null, doc: null };
+  const S = { lang: 'ka', user: null, me: null, doc: null, cfg: { memberCode: false }, needCode: false };
   try { const l = localStorage.getItem('alpiki.lang'); if (LANGS.includes(l)) S.lang = l; } catch (_) {}
   if (!LANGS.includes(S.lang)) S.lang = 'ka';
 
@@ -121,6 +121,8 @@
   /* ---------- login ---------- */
   function renderLogin() {
     if (route() !== 'login') history.replaceState(null, '', '#login');
+    const prevPid = $('#pid')?.value || '', prevCode = $('#code')?.value || '';
+    const showCode = S.cfg.memberCode || S.needCode;
     $('#app').innerHTML = `
       <header class="topbar"><div class="topbar-in">
         <span class="brand"><span class="brand-mark">${MARK}</span><span class="brand-text"><b>${esc(t('app.name'))}</b><span>${esc(t('app.sub'))}</span></span></span>
@@ -128,17 +130,17 @@
       </div></header>
       <div class="login-wrap">
         <form class="card login-card" id="login-form" novalidate>
-          <div class="stack gap-6"><h1>${esc(t('login.title'))}</h1><p class="lead">${esc(t('login.lead'))}</p></div>
+          <div class="stack gap-6"><h1>${esc(t('login.title'))}</h1><p class="lead">${esc(t(S.cfg.memberCode ? 'login.lead' : 'login.leadId'))}</p></div>
           <div id="login-err" class="alert alert-error" role="alert" hidden></div>
           <div class="field"><label for="pid">${esc(t('login.pid'))}</label>
-            <input class="input input-lg" id="pid" name="pid" autocomplete="username" inputmode="text" autocapitalize="characters" spellcheck="false" required>
+            <input class="input input-lg" id="pid" name="pid" autocomplete="username" inputmode="text" autocapitalize="characters" spellcheck="false" required value="${esc(prevPid)}">
             <span class="hint">${esc(t('login.pidHint'))}</span></div>
-          <div class="field"><label for="code">${esc(t('login.code'))}</label>
-            <input class="input input-lg" id="code" name="code" autocomplete="one-time-code" autocapitalize="characters" spellcheck="false" maxlength="9" placeholder="XXXX-XXXX" required>
-            <span class="hint">${esc(t('login.codeHint'))}</span></div>
+          <div class="field" id="code-field" ${showCode ? '' : 'hidden'}><label for="code">${esc(t('login.code'))}</label>
+            <input class="input input-lg" id="code" name="code" autocomplete="one-time-code" autocapitalize="characters" spellcheck="false" maxlength="9" placeholder="XXXX-XXXX" value="${esc(prevCode)}">
+            <span class="hint">${esc(t(S.cfg.memberCode ? 'login.codeHint' : 'login.codeAdmin'))}</span></div>
           <button class="btn btn-primary btn-block" type="submit" id="login-btn">${esc(t('login.submit'))}</button>
           <div class="login-foot">
-            <span>${esc(t('login.noCode'))}</span>
+            <span>${esc(t(S.cfg.memberCode ? 'login.noCode' : 'login.help'))}</span>
             <span class="copy-line"><span class="mono">${esc(CHAIR.phone)}</span> · <span class="mono">${esc(CHAIR.email)}</span></span>
             <span class="xs">${esc(t('login.privacy'))}</span>
           </div>
@@ -149,17 +151,22 @@
       const v = code.value.toUpperCase().replace(/[^A-Z0-9]/g, '').slice(0, 8);
       code.value = v.length > 4 ? v.slice(0, 4) + '-' + v.slice(4) : v;
     });
+    $('#pid').addEventListener('input', () => { if (S.needCode && !S.cfg.memberCode) { S.needCode = false; $('#code-field').hidden = true; code.value = ''; } });
     $('#login-form').addEventListener('submit', async (e) => {
       e.preventDefault();
       const err = $('#login-err'), btn = $('#login-btn');
       err.hidden = true; btn.disabled = true;
       try {
         const r = await api('POST', '/api/auth/login', { personalId: $('#pid').value, accessCode: code.value, lang: S.lang });
-        S.user = r.user;
+        S.user = r.user; S.needCode = false;
         go(S.user.role === 'superadmin' ? 'admin/overview' : 'me');
-      } catch (ex) { err.textContent = errText(ex.code === 'bad_json' ? 'generic' : ex.code); err.hidden = false; btn.disabled = false; }
+      } catch (ex) {
+        btn.disabled = false;
+        if (ex.code === 'code_required' && $('#code-field').hidden) { S.needCode = true; $('#code-field').hidden = false; code.focus(); return; }
+        err.textContent = errText(ex.code === 'bad_json' ? 'generic' : ex.code); err.hidden = false;
+      }
     });
-    setTimeout(() => $('#pid')?.focus(), 30);
+    setTimeout(() => (S.needCode ? code : $('#pid'))?.focus(), 30);
   }
 
   /* ---------- member ---------- */
@@ -314,7 +321,7 @@
         ${kpi(t('adm.kpiUnits'), `${ov.units.signed}<span class="muted small"> / ${ov.units.total}</span>`, `${fmtNum(pct(ov.units.signed, ov.units.total))}%`)}
         ${kpi(t('adm.kpiArea'), `${fmtNum(pct(ov.units.signedArea, ov.units.area))}%`, `${fmtNum(ov.units.signedArea, 1)} / ${fmtNum(ov.units.area, 1)} m²`)}
         ${kpi(t('adm.kpiMembers'), `${ov.persons.signed}<span class="muted small"> / ${ov.persons.total}</span>`, `${fmtNum(pct(ov.persons.signed, ov.persons.total))}%`)}
-        ${kpi(t('adm.kpiCodes'), `${ov.persons.withCode}<span class="muted small"> / ${ov.persons.total}</span>`, `${fmtNum(pct(ov.persons.withCode, ov.persons.total))}%`)}
+        ${ov.memberCode ? kpi(t('adm.kpiCodes'), `${ov.persons.withCode}<span class="muted small"> / ${ov.persons.total}</span>`, `${fmtNum(pct(ov.persons.withCode, ov.persons.total))}%`) : kpi(t('adm.kpiLoggedIn'), `${ov.persons.loggedIn}<span class="muted small"> / ${ov.persons.total}</span>`, `${fmtNum(pct(ov.persons.loggedIn, ov.persons.total))}%`)}
       </div>
       <div class="overview-grid">
         <section class="card"><div class="card-head"><h2>${esc(t('nav.units'))}</h2><a class="link-btn small" href="#admin/units">→</a></div>
@@ -363,6 +370,7 @@
   }
 
   /* ---------- admin: members ---------- */
+  const accessCell = (p) => `<td data-label="${esc(t('adm.col.access'))}">${p.locked_until && p.locked_until > new Date().toISOString() ? `<span class="chip chip-danger">${esc(t('adm.locked'))}</span>` : p.has_code ? `<span class="chip chip-ok">${esc(t('adm.hasCode'))}</span>` : `<span class="chip chip-muted">${esc(t('adm.noCode'))}</span>`}</td>`;
   function renderMembers() {
     const f = F.members;
     shell(`
@@ -370,7 +378,7 @@
       <section class="card">
         <div class="card-head filters">
           <input class="input grow" id="m-q" type="search" placeholder="${esc(t('adm.search'))}" value="${esc(f.q)}" aria-label="${esc(t('adm.search'))}">
-          <select class="input" id="m-status" aria-label="${esc(t('adm.col.status'))}">${['all', 'signed', 'partial', 'unsigned', 'nocode'].map((s) => `<option value="${s}" ${f.status === s ? 'selected' : ''}>${esc(t('status.' + s))}</option>`).join('')}</select>
+          <select class="input" id="m-status" aria-label="${esc(t('adm.col.status'))}">${['all', 'signed', 'partial', 'unsigned'].concat(S.cfg.memberCode ? ['nocode'] : []).map((s) => `<option value="${s}" ${f.status === s ? 'selected' : ''}>${esc(t('status.' + s))}</option>`).join('')}</select>
         </div>
         <div class="table-wrap" id="m-table"><div class="empty">${esc(t('adm.loading'))}</div></div>
       </section>`);
@@ -379,12 +387,12 @@
         const { persons } = await api('GET', '/api/admin/persons?' + new URLSearchParams(f));
         $('#m-count').textContent = t('adm.results', { n: persons.length });
         $('#m-table').innerHTML = persons.length ? `<table class="data stackable"><thead><tr>
-          <th>${esc(t('adm.col.name'))}</th><th>${esc(t('adm.col.ids'))}</th><th>${esc(t('adm.col.units'))}</th><th>${esc(t('adm.col.access'))}</th><th>${esc(t('adm.col.lastLogin'))}</th><th>${esc(t('adm.col.status'))}</th></tr></thead><tbody>
+          <th>${esc(t('adm.col.name'))}</th><th>${esc(t('adm.col.ids'))}</th><th>${esc(t('adm.col.units'))}</th>${S.cfg.memberCode ? `<th>${esc(t('adm.col.access'))}</th>` : ''}<th>${esc(t('adm.col.lastLogin'))}</th><th>${esc(t('adm.col.status'))}</th></tr></thead><tbody>
           ${persons.map((p) => `<tr class="clickable" data-person="${p.id}" tabindex="0">
             <td data-label="${esc(t('adm.col.name'))}"><b>${esc(name(p))}</b>${p.role === 'superadmin' ? ` <span class="chip chip-info">${esc(t('role.superadmin'))}</span>` : ''}</td>
             <td data-label="${esc(t('adm.col.ids'))}" class="mono xs">${p.ids.map(esc).join('<br>')}</td>
             <td data-label="${esc(t('adm.col.units'))}" class="small">${esc(p.unit_labels || '')}</td>
-            <td data-label="${esc(t('adm.col.access'))}">${p.locked_until && p.locked_until > new Date().toISOString() ? `<span class="chip chip-danger">${esc(t('adm.locked'))}</span>` : p.has_code ? `<span class="chip chip-ok">${esc(t('adm.hasCode'))}</span>` : `<span class="chip chip-muted">${esc(t('adm.noCode'))}</span>`}</td>
+            ${S.cfg.memberCode ? accessCell(p) : ''}
             <td data-label="${esc(t('adm.col.lastLogin'))}" class="small">${esc(p.last_login_at ? fmtDate(p.last_login_at) : t('adm.never'))}</td>
             <td data-label="${esc(t('adm.col.status'))}">${statusChip(p.status)} <span class="xs muted num">${p.signed_count}/${p.unit_count}</span></td></tr>`).join('')}
           </tbody></table>` : `<div class="empty">${esc(t('adm.empty'))}</div>`;
@@ -435,7 +443,7 @@
           <dt>${esc(t('adm.col.lastLogin'))}</dt><dd>${esc(p.last_login_at ? fmtDate(p.last_login_at) : t('adm.never'))}</dd>
         </dl>
       </section>
-      <section><h3>${esc(t('p.access'))}</h3>
+      <section ${S.cfg.memberCode || p.role === 'superadmin' ? '' : 'hidden'}><h3>${esc(t('p.access'))}</h3>
         ${newCode ? `<div class="code-reveal"><span class="label">${esc(t('p.newCode'))}</span><span class="code">${esc(newCode)}</span><span class="small">${esc(t('p.newCodeNote'))}</span>
           <div class="row"><button type="button" class="btn btn-sm" data-copy-msg="${esc(newCode)}">${esc(t('p.copyMessage'))}</button></div></div>` : ''}
         <p class="small muted">${esc(p.has_code ? t('p.codeIssuedAt', { date: fmtDate(p.code_issued_at) }) : t('p.noCodeYet'))}</p>
@@ -556,6 +564,7 @@
 
   /* ---------- boot ---------- */
   (async () => {
+    try { S.cfg = await api('GET', '/api/auth/config'); } catch (_) {}
     try {
       const r = await api('GET', '/api/auth/session');
       S.user = r.user;

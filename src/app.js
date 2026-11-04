@@ -104,23 +104,29 @@ export function createApp({ db: dbOrPromise, config, serveStatic = true }) {
     if (!await hitLimit('login-ip:' + ctx.ip, config.loginMaxPerIp, 15 * 60 * 1000)) throw new HttpError(429, 'too_many_attempts');
     const body = await readJson(ctx.req);
     const pid = normId(body.personalId), code = normCode(body.accessCode);
-    if (pid.length < 5 || pid.length > 20 || code.length !== 8) throw new HttpError(400, 'invalid_credentials');
+    if (pid.length < 5 || pid.length > 20) throw new HttpError(400, 'unknown_id');
     const hit = await db.get('SELECT person_id FROM identifiers WHERE value = ?', pid);
     const person = hit ? await personById(hit.person_id) : null;
-    if (person?.locked_until && person.locked_until > nowIso()) {
-      verifySecret(code, null);
+    if (!person) {
+      await audit(null, 'login_failed', `pid:${maskId(pid)}`, null, ctx.ip);
+      throw new HttpError(401, 'unknown_id');
+    }
+    if (person.locked_until && person.locked_until > nowIso()) {
       await audit(person.id, 'login_blocked', `person:${person.id}`, null, ctx.ip);
       throw new HttpError(429, 'too_many_attempts');
     }
-    const ok = verifySecret(code, person?.code_hash ?? null);
-    if (!ok) {
-      if (person) {
+    // Owners sign in with their ID number alone (unless REQUIRE_ACCESS_CODE is set);
+    // the super admin, who sees everyone's data, always needs the access code as well.
+    const needsCode = config.requireMemberCode || person.role === 'superadmin';
+    if (needsCode) {
+      if (code.length !== 8) throw new HttpError(401, 'code_required');
+      if (!verifySecret(code, person.code_hash ?? null)) {
         const r = await db.get(`UPDATE persons SET failed_logins = failed_logins + 1 WHERE id = ? RETURNING failed_logins`, person.id);
         const lock = r.failed_logins >= config.maxFailedLogins;
         if (lock) await db.run('UPDATE persons SET failed_logins = 0, locked_until = ? WHERE id = ?', new Date(Date.now() + config.lockMinutes * 60000).toISOString(), person.id);
         await audit(null, lock ? 'login_locked' : 'login_failed', `person:${person.id}`, null, ctx.ip);
-      } else await audit(null, 'login_failed', `pid:${maskId(pid)}`, null, ctx.ip);
-      throw new HttpError(401, 'invalid_credentials');
+        throw new HttpError(401, 'invalid_credentials');
+      }
     }
     const token = newToken();
     const lang = LANGS.includes(body.lang) ? body.lang : person.lang;
@@ -142,6 +148,8 @@ export function createApp({ db: dbOrPromise, config, serveStatic = true }) {
     setCookie(ctx.res, '', 0);
     return { ok: true };
   });
+
+  route('GET', '/api/auth/config', async () => ({ memberCode: !!config.requireMemberCode }));
 
   route('GET', '/api/auth/session', async (ctx) => ({ user: await publicUser(requireUser(ctx)) }));
 
@@ -230,12 +238,12 @@ export function createApp({ db: dbOrPromise, config, serveStatic = true }) {
     const docId = await firstDocId();
     const units = await db.get('SELECT COUNT(*) AS n, COALESCE(SUM(area), 0) AS area FROM units');
     const signedUnits = await db.get(`SELECT COUNT(*) AS n, COALESCE(SUM(area), 0) AS area FROM units WHERE id IN (SELECT unit_id FROM signatures WHERE document_id = ? AND revoked_at IS NULL)`, docId);
-    const people = await db.get(`SELECT COUNT(*) AS n, COUNT(*) FILTER (WHERE code_hash IS NOT NULL) AS "withCode",
+    const people = await db.get(`SELECT COUNT(*) AS n, COUNT(*) FILTER (WHERE code_hash IS NOT NULL) AS "withCode", COUNT(*) FILTER (WHERE last_login_at IS NOT NULL) AS "loggedIn",
       COUNT(*) FILTER (WHERE id IN (SELECT person_id FROM signatures WHERE document_id = ? AND revoked_at IS NULL)) AS signed FROM persons`, docId);
     const sigCount = (await db.get('SELECT COUNT(*) AS n FROM signatures WHERE document_id = ? AND revoked_at IS NULL', docId)).n;
     const recent = await db.all(`SELECT a.at, a.action, a.target, p.name_ka, p.name_en FROM audit_log a LEFT JOIN persons p ON p.id = a.actor_id ORDER BY a.id DESC LIMIT 8`);
     return { documentId: docId, units: { total: units.n, signed: signedUnits.n, area: units.area, signedArea: signedUnits.area },
-      persons: { total: people.n, withCode: people.withCode, signed: people.signed }, signatures: sigCount, recent };
+      persons: { total: people.n, withCode: people.withCode, loggedIn: people.loggedIn, signed: people.signed }, memberCode: !!config.requireMemberCode, signatures: sigCount, recent };
   });
 
   route('GET', '/api/admin/units', async (ctx) => {

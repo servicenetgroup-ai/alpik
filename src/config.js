@@ -15,6 +15,8 @@ export const config = {
   maxSignatureBytes: 400 * 1024,
   secureCookies: bool(env.SECURE_COOKIES, onVercel || env.NODE_ENV === 'production'),
   trustProxy: bool(env.TRUST_PROXY, onVercel),
+  // Owners sign in with their ID number only, unless this is set to 1.
+  requireMemberCode: bool(env.REQUIRE_ACCESS_CODE, false),
   // First super admin, set once in the hosting dashboard (see README).
   superadminId: env.SUPERADMIN_ID || '',
   superadminInitialCode: env.SUPERADMIN_INITIAL_CODE || '',

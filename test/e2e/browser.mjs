@@ -32,9 +32,9 @@ const adminCookie = await apiLogin('01020003679', ADMIN_CODE);
 const findId = async (q) => (await (await fetch(BASE + '/api/admin/persons?q=' + q, { headers: { cookie: adminCookie } })).json()).persons[0].id;
 const issue = async (id) => (await (await fetch(BASE + `/api/admin/persons/${id}/access-code`, { method: 'POST', headers: { cookie: adminCookie, 'x-alpiki': '1' } })).json()).code;
 const MEMBER_PID = '01024024038'; // Khatuna Danelia, 3 units
-const MEMBER_CODE = await issue(await findId(MEMBER_PID));
+
 const MEMBER2_PID = 'MP4433152';   // Iuri Kolpak (passport), 2 units
-const MEMBER2_CODE = await issue(await findId(MEMBER2_PID));
+
 
 // 2. chrome
 const chrome = spawn('google-chrome', ['--headless=new', '--no-sandbox', '--disable-gpu', '--hide-scrollbars', `--remote-debugging-port=${CDP_PORT}`, `--user-data-dir=${path.join(tmp, 'chrome')}`, 'about:blank'], { stdio: 'ignore' });
@@ -66,8 +66,13 @@ const noOverflow = () => evaluate('document.documentElement.scrollWidth <= windo
 const setVal = (sel, v) => evaluate(`(() => { const el = document.querySelector(${JSON.stringify(sel)}); el.focus(); el.value = ${JSON.stringify(v)}; el.dispatchEvent(new Event('input', { bubbles: true })); return true; })()`);
 async function setLang(l) { await evaluate(`document.querySelector('[data-lang="${l}"]').click()`); await sleep(250); }
 async function uiLogin(pid, code) {
-  await setVal('#pid', pid); await setVal('#code', code);
+  await setVal('#pid', pid);
   await evaluate(`document.querySelector('#login-form').requestSubmit()`);
+  if (code) {
+    await waitFor(`!document.querySelector('#code-field').hidden`);
+    await setVal('#code', code);
+    await evaluate(`document.querySelector('#login-form').requestSubmit()`);
+  }
 }
 async function logout() { await evaluate(`document.querySelector('[data-action="logout"]').click()`); await waitFor(`document.querySelector('#login-form')`); }
 
@@ -83,12 +88,13 @@ try {
   await viewport('mobile'); await shot('03-login-ru-mobile', false);
   check('login page fits phone width', await noOverflow());
 
-  // ---- wrong code
-  await uiLogin(MEMBER_PID, 'ZZZZ-ZZZZ');
-  check('wrong code shows translated error', await waitFor(`!document.querySelector('#login-err').hidden && document.querySelector('#login-err').textContent.includes('Неверный')`));
+  // ---- owners: ID number only, no code field
+  check('no access-code field for owners', await evaluate(`document.querySelector('#code-field').hidden`));
+  await uiLogin('99999999999');
+  check('unknown ID shows translated error', await waitFor(`!document.querySelector('#login-err').hidden && document.querySelector('#login-err').textContent.includes('не найден')`));
 
   // ---- member login (mobile, RU kept)
-  await uiLogin(MEMBER_PID, MEMBER_CODE.toLowerCase());
+  await uiLogin(MEMBER_PID);
   check('member signs in', await waitFor(`document.querySelector('#sign-form')`, 8000));
   check('language kept after sign-in (RU)', await evaluate(`document.querySelector('h1').textContent.startsWith('Здравствуйте')`));
   check('member sees only own 3 units', await evaluate(`document.querySelectorAll('.unit-item').length === 3`));
@@ -131,7 +137,7 @@ try {
 
   // ---- second member: desktop, EN, sees nothing of member 1
   await viewport('desktop'); await setLang('en');
-  await uiLogin(MEMBER2_PID, MEMBER2_CODE);
+  await uiLogin(MEMBER2_PID);
   check('member signs in with passport number', await waitFor(`document.querySelector('.unit-item')`, 8000));
   check('second member does not see first member\'s data', await evaluate(`!document.body.innerText.includes('Danelia') && document.querySelectorAll('.sig-item').length === 0`));
   await shot('07-member-en-desktop');
@@ -140,6 +146,10 @@ try {
 
   // ---- admin desktop KA
   await setLang('ka');
+  await setVal('#pid', '01020003679');
+  await evaluate(`document.querySelector('#login-form').requestSubmit()`);
+  check('admin ID asks for the access code', await waitFor(`!document.querySelector('#code-field').hidden && location.hash === '#login'`));
+  await shot('00-login-admin-code-ka-desktop', false);
   await uiLogin('01020003679', ADMIN_CODE);
   check('super admin signs in to overview', await waitFor(`location.hash === '#admin/overview' && document.querySelector('.kpi')`, 8000));
   check('overview counts 2 signed units', await evaluate(`document.querySelector('.kpi .v').textContent.startsWith('2')`));

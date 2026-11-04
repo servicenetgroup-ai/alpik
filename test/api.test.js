@@ -17,7 +17,7 @@ const A_PID = '01024024038';       // Khatuna Danelia: units 33ა, 40ა, parki
 const B_PID = '61001021571';       // Natia Tkhilaishvili: units 3, 6ა
 const PASSPORT_PID = 'MP4433152';  // Iuri Kolpak, passport number (second identifier)
 
-let cluster, dbUrl, db, server, base, adminCode;
+let cluster, dbUrl, db, server, base, strictServer, strictBase, adminCode;
 const config = { ...baseConfig, secureCookies: false, loginMaxPerIp: 1000 };
 
 function png(w, h, ink) {
@@ -29,17 +29,17 @@ function png(w, h, ink) {
   return 'data:image/png;base64,' + buf.toString('base64');
 }
 
-async function call(method, url, { body, cookie, headers = {}, raw } = {}) {
+async function call(method, url, { body, cookie, headers = {}, raw, at } = {}) {
   const h = { ...headers };
   if (method !== 'GET') h['x-alpiki'] ??= '1';
   if (body) h['content-type'] = 'application/json';
   if (cookie) h.cookie = cookie;
-  const res = await fetch(base + url, { method, headers: h, body: body ? JSON.stringify(body) : undefined });
+  const res = await fetch((at || base) + url, { method, headers: h, body: body ? JSON.stringify(body) : undefined });
   const setCookie = res.headers.get('set-cookie');
   const data = raw ? Buffer.from(await res.arrayBuffer()) : await res.json().catch(() => null);
   return { status: res.status, data, cookie: setCookie ? setCookie.split(';')[0] : null, headers: res.headers };
 }
-const login = async (pid, code) => call('POST', '/api/auth/login', { body: { personalId: pid, accessCode: code } });
+const login = async (pid, code, at) => call('POST', '/api/auth/login', { body: { personalId: pid, accessCode: code }, at });
 
 before(async () => {
   cluster = await startCluster();
@@ -52,8 +52,12 @@ before(async () => {
   server = http.createServer(createApp({ db, config }));
   await new Promise(r => server.listen(0, '127.0.0.1', r));
   base = `http://127.0.0.1:${server.address().port}`;
+  // Same database, but with REQUIRE_ACCESS_CODE=1 (owners also need a code).
+  strictServer = http.createServer(createApp({ db, config: { ...config, requireMemberCode: true } }));
+  await new Promise(r => strictServer.listen(0, '127.0.0.1', r));
+  strictBase = `http://127.0.0.1:${strictServer.address().port}`;
 });
-after(async () => { server.close(); await db.close(); cluster.stop(); });
+after(async () => { server.close(); strictServer.close(); await db.close(); cluster.stop(); });
 
 let admin, admin2, memberA, memberB, codeA, codeB, sigIdA;
 
@@ -65,13 +69,28 @@ test('registry import: 118 units, 104 owners, idempotent re-import', async () =>
   assert.equal((await db.get('SELECT COUNT(*) n FROM unit_owners')).n, 135);
 });
 
-test('login requires an issued access code; errors do not reveal whether the ID exists', async () => {
-  const noCode = await login(A_PID, 'AAAA-BBBB');
-  const unknown = await login('99999999999', 'AAAA-BBBB');
-  assert.equal(noCode.status, 401); assert.equal(unknown.status, 401);
-  assert.deepEqual(noCode.data, unknown.data);
-  const anon = await call('GET', '/api/me');
-  assert.equal(anon.status, 401);
+test('owners sign in with the ID number alone; unknown numbers are refused', async () => {
+  const cfg = await call('GET', '/api/auth/config');
+  assert.deepEqual(cfg.data, { memberCode: false });
+  const unknown = await login('99999999999', '');
+  assert.equal(unknown.status, 401); assert.equal(unknown.data.error, 'unknown_id');
+  const ok = await login(B_PID, '');
+  assert.equal(ok.status, 200); assert.equal(ok.data.user.role, 'member');
+  assert.equal((await call('GET', '/api/me')).status, 401, 'no cookie, no data');
+});
+
+test('the super admin always needs the access code as well', async () => {
+  const noCode = await login(ADMIN_PID, '');
+  assert.equal(noCode.status, 401); assert.equal(noCode.data.error, 'code_required');
+  const wrong = await login(ADMIN_PID, 'ZZZZ-ZZZY');
+  assert.equal(wrong.status, 401); assert.equal(wrong.data.error, 'invalid_credentials');
+  await db.run('UPDATE persons SET failed_logins = 0 WHERE id = (SELECT person_id FROM identifiers WHERE value = ?)', ADMIN_PID);
+});
+
+test('with REQUIRE_ACCESS_CODE=1 owners need a code too', async () => {
+  assert.deepEqual((await call('GET', '/api/auth/config', { at: strictBase })).data, { memberCode: true });
+  const r = await login(A_PID, '', strictBase);
+  assert.equal(r.status, 401); assert.equal(r.data.error, 'code_required');
 });
 
 test('super admin signs in and issues access codes', async () => {
@@ -195,12 +214,12 @@ test('resetting an access code ends the member\'s sessions', async () => {
   const id = (await call('GET', '/api/me', { cookie: memberB })).data.user.id;
   await call('POST', `/api/admin/persons/${id}/access-code`, { cookie: admin });
   assert.equal((await call('GET', '/api/me', { cookie: memberB })).status, 401);
-  assert.equal((await login(B_PID, codeB)).status, 401, 'old code no longer works');
+  assert.equal((await login(B_PID, codeB, strictBase)).status, 401, 'old code no longer works where codes are required');
 });
 
-test('repeated wrong codes lock the account', async () => {
-  for (let i = 0; i < 5; i++) assert.equal((await login(A_PID, 'ZZZZ-ZZZZ')).status, 401);
-  const r = await login(A_PID, codeA);
+test('repeated wrong codes lock the account (where codes are required)', async () => {
+  for (let i = 0; i < 5; i++) assert.equal((await login(A_PID, 'ZZZZ-ZZZZ', strictBase)).status, 401);
+  const r = await login(A_PID, codeA, strictBase);
   assert.equal(r.status, 429, 'correct code refused while locked');
 });
 
