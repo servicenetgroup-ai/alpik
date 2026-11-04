@@ -1,0 +1,2723 @@
+[
+ {
+  "num": 1,
+  "code": "71.62.58.548.01.01.001",
+  "type": "apartment",
+  "label": "1",
+  "floor": "1",
+  "area": 39.7,
+  "owners": [
+   {
+    "name_ka": "ალექსანდრ პილგანსკი",
+    "name_en": "Aleksandr Pilganski",
+    "type": "person",
+    "ids": [
+     {
+      "kind": "P/N",
+      "value": "761226301097"
+     },
+     {
+      "kind": "C/N",
+      "value": "13944883"
+     }
+    ]
+   }
+  ]
+ },
+ {
+  "num": 2,
+  "code": "71.62.58.548.01.01.001ა",
+  "type": "apartment",
+  "label": "1ა",
+  "floor": "1",
+  "area": 30.2,
+  "owners": [
+   {
+    "name_ka": "დებორა დე სოუზა",
+    "name_en": "Debora De Souza",
+    "type": "person",
+    "ids": [
+     {
+      "kind": "P/N",
+      "value": "HP961475"
+     }
+    ]
+   }
+  ]
+ },
+ {
+  "num": 3,
+  "code": "71.62.58.548.01.01.002",
+  "type": "apartment",
+  "label": "2",
+  "floor": "1",
+  "area": 30.0,
+  "owners": [
+   {
+    "name_ka": "ანი სუბელიანი",
+    "name_en": "Ani Subeliani",
+    "type": "person",
+    "ids": [
+     {
+      "kind": "P/N",
+      "value": "01017016312"
+     }
+    ]
+   }
+  ]
+ },
+ {
+  "num": 4,
+  "code": "71.62.58.548.01.01.002ა",
+  "type": "apartment",
+  "label": "2ა",
+  "floor": "1",
+  "area": 31.8,
+  "owners": [
+   {
+    "name_ka": "ლილი ელბრეხტ",
+    "name_en": "Lili Elbrekht",
+    "type": "person",
+    "ids": [
+     {
+      "kind": "P/N",
+      "value": "01008007936"
+     }
+    ]
+   }
+  ]
+ },
+ {
+  "num": 5,
+  "code": "71.62.58.548.01.01.003",
+  "type": "apartment",
+  "label": "3",
+  "floor": "1",
+  "area": 32.0,
+  "owners": [
+   {
+    "name_ka": "ნათია თხილაიშვილი",
+    "name_en": "Natia Tkhilaishvili",
+    "type": "person",
+    "ids": [
+     {
+      "kind": "P/N",
+      "value": "61001021571"
+     }
+    ]
+   }
+  ]
+ },
+ {
+  "num": 6,
+  "code": "71.62.58.548.01.01.003ა",
+  "type": "apartment",
+  "label": "3ა",
+  "floor": "1",
+  "area": 33.2,
+  "owners": [
+   {
+    "name_ka": "აშოტ არუთინოვი",
+    "name_en": "Ashot Arutinovi",
+    "type": "person",
+    "ids": [
+     {
+      "kind": "C/N",
+      "value": "753452785"
+     }
+    ]
+   }
+  ]
+ },
+ {
+  "num": 7,
+  "code": "71.62.58.548.01.01.004",
+  "type": "apartment",
+  "label": "4",
+  "floor": "1",
+  "area": 33.1,
+  "owners": [
+   {
+    "name_ka": "ნინო კურცხალია",
+    "name_en": "Nino Kurtskhalia",
+    "type": "person",
+    "ids": [
+     {
+      "kind": "P/N",
+      "value": "01030037319"
+     }
+    ]
+   }
+  ]
+ },
+ {
+  "num": 8,
+  "code": "71.62.58.548.01.01.004ა",
+  "type": "apartment",
+  "label": "4ა",
+  "floor": "1",
+  "area": 33.1,
+  "owners": [
+   {
+    "name_ka": "ალბერტო ქუინტანა ლოპეზ",
+    "name_en": "Alberto Quintana Lopez",
+    "type": "person",
+    "ids": [
+     {
+      "kind": "P/N",
+      "value": "01391019553"
+     },
+     {
+      "kind": "C/N",
+      "value": "PAI592950"
+     }
+    ]
+   }
+  ]
+ },
+ {
+  "num": 9,
+  "code": "71.62.58.548.01.01.005",
+  "type": "apartment",
+  "label": "5",
+  "floor": "1",
+  "area": 33.2,
+  "owners": [
+   {
+    "name_ka": "თამარ ღვაბერიძე",
+    "name_en": "Tamar Ghvaberidze",
+    "type": "person",
+    "ids": [
+     {
+      "kind": "P/N",
+      "value": "01024016430"
+     }
+    ]
+   }
+  ]
+ },
+ {
+  "num": 10,
+  "code": "71.62.58.548.01.01.005ა",
+  "type": "apartment",
+  "label": "5ა",
+  "floor": "1",
+  "area": 30.2,
+  "owners": [
+   {
+    "name_ka": "თამარ მიქაუტაძე",
+    "name_en": "Tamar Mikautadze",
+    "type": "person",
+    "ids": [
+     {
+      "kind": "P/N",
+      "value": "01027047466"
+     }
+    ]
+   }
+  ]
+ },
+ {
+  "num": 11,
+  "code": "71.62.58.548.01.01.006",
+  "type": "apartment",
+  "label": "6",
+  "floor": "1",
+  "area": 30.0,
+  "owners": [
+   {
+    "name_ka": "ნინო იოსავა",
+    "name_en": "Nino Iosava",
+    "type": "person",
+    "ids": [
+     {
+      "kind": "P/N",
+      "value": "01008051189"
+     }
+    ]
+   }
+  ]
+ },
+ {
+  "num": 12,
+  "code": "71.62.58.548.01.01.006ა",
+  "type": "apartment",
+  "label": "6ა",
+  "floor": "1",
+  "area": 30.0,
+  "owners": [
+   {
+    "name_ka": "ნათია თხილაიშვილი",
+    "name_en": "Natia Tkhilaishvili",
+    "type": "person",
+    "ids": [
+     {
+      "kind": "P/N",
+      "value": "61001021571"
+     }
+    ]
+   }
+  ]
+ },
+ {
+  "num": 13,
+  "code": "71.62.58.548.01.01.007",
+  "type": "apartment",
+  "label": "7",
+  "floor": "1",
+  "area": 30.2,
+  "owners": [
+   {
+    "name_ka": "მარინა ცერცვაძე",
+    "name_en": "Marina Tsertsvadze",
+    "type": "person",
+    "ids": [
+     {
+      "kind": "P/N",
+      "value": "01026010430"
+     }
+    ]
+   }
+  ]
+ },
+ {
+  "num": 14,
+  "code": "71.62.58.548.01.01.007ა",
+  "type": "apartment",
+  "label": "7ა",
+  "floor": "1",
+  "area": 39.7,
+  "owners": [
+   {
+    "name_ka": "იური კოლპაკ",
+    "name_en": "Iuri Kolpak",
+    "type": "person",
+    "ids": [
+     {
+      "kind": "P/N",
+      "value": "3050175A030PB4"
+     },
+     {
+      "kind": "C/N",
+      "value": "MP4433152"
+     }
+    ]
+   }
+  ]
+ },
+ {
+  "num": 15,
+  "code": "71.62.58.548.01.01.008",
+  "type": "apartment",
+  "label": "8",
+  "floor": "2",
+  "area": 59.3,
+  "owners": [
+   {
+    "name_ka": "როს ვაინ ფარქუჰარ",
+    "name_en": "Ross Wayne",
+    "type": "person",
+    "ids": [
+     {
+      "kind": "C/N",
+      "value": "562154664"
+     }
+    ]
+   },
+   {
+    "name_ka": "ლიზ ანნ ფარქუჰარ",
+    "name_en": "Lise Ann Farquhar",
+    "type": "person",
+    "ids": [
+     {
+      "kind": "C/N",
+      "value": "154016760"
+     }
+    ]
+   }
+  ]
+ },
+ {
+  "num": 16,
+  "code": "71.62.58.548.01.01.009",
+  "type": "apartment",
+  "label": "9",
+  "floor": "2",
+  "area": 30.9,
+  "owners": [
+   {
+    "name_ka": "ტაკეში კანეკო",
+    "name_en": "Takeshi Kaneko",
+    "type": "person",
+    "ids": [
+     {
+      "kind": "C/N",
+      "value": "TK5417164"
+     }
+    ]
+   }
+  ]
+ },
+ {
+  "num": 17,
+  "code": "71.62.58.548.01.01.009ა",
+  "type": "apartment",
+  "label": "9ა",
+  "floor": "2",
+  "area": 31.8,
+  "owners": [
+   {
+    "name_ka": "ლევანი ყიფშიძე",
+    "name_en": "Levani Kipshidze",
+    "type": "person",
+    "ids": [
+     {
+      "kind": "P/N",
+      "value": "60001143684"
+     }
+    ]
+   }
+  ]
+ },
+ {
+  "num": 18,
+  "code": "71.62.58.548.01.01.010",
+  "type": "apartment",
+  "label": "10",
+  "floor": "2",
+  "area": 32.0,
+  "owners": [
+   {
+    "name_ka": "მარიამი რუსიშვილი",
+    "name_en": "Mariami Rusishvili",
+    "type": "person",
+    "ids": [
+     {
+      "kind": "P/N",
+      "value": "01019061338"
+     }
+    ]
+   }
+  ]
+ },
+ {
+  "num": 19,
+  "code": "71.62.58.548.01.01.010ა",
+  "type": "apartment",
+  "label": "10ა",
+  "floor": "2",
+  "area": 33.3,
+  "owners": [
+   {
+    "name_ka": "მედიკო ხადური",
+    "name_en": "Mediko Khaduri",
+    "type": "person",
+    "ids": [
+     {
+      "kind": "P/N",
+      "value": "01008007656"
+     }
+    ]
+   }
+  ]
+ },
+ {
+  "num": 20,
+  "code": "71.62.58.548.01.01.011",
+  "type": "apartment",
+  "label": "11",
+  "floor": "2",
+  "area": 33.1,
+  "owners": [
+   {
+    "name_ka": "ელნარა აბდულაევა",
+    "name_en": "Elnara Abdulaeva",
+    "type": "person",
+    "ids": [
+     {
+      "kind": "P/N",
+      "value": "550213664"
+     }
+    ]
+   }
+  ]
+ },
+ {
+  "num": 21,
+  "code": "71.62.58.548.01.01.011ა",
+  "type": "apartment",
+  "label": "11ა",
+  "floor": "2",
+  "area": 33.1,
+  "owners": [
+   {
+    "name_ka": "მაგდალინა ბიწაძე",
+    "name_en": "Magdalina Bitsadze",
+    "type": "person",
+    "ids": [
+     {
+      "kind": "P/N",
+      "value": "01024002564"
+     }
+    ]
+   }
+  ]
+ },
+ {
+  "num": 22,
+  "code": "71.62.58.548.01.01.012",
+  "type": "apartment",
+  "label": "12",
+  "floor": "2",
+  "area": 33.3,
+  "owners": [
+   {
+    "name_ka": "სულთან აკჩურინ",
+    "name_en": "Sultan Akchurin",
+    "type": "person",
+    "ids": [
+     {
+      "kind": "C/N",
+      "value": "737180039"
+     }
+    ]
+   }
+  ]
+ },
+ {
+  "num": 23,
+  "code": "71.62.58.548.01.01.012ა",
+  "type": "apartment",
+  "label": "12ა",
+  "floor": "2",
+  "area": 32.0,
+  "owners": [
+   {
+    "name_ka": "მარიამი ცინდელიანი",
+    "name_en": "Mariami Tsindeliani",
+    "type": "person",
+    "ids": [
+     {
+      "kind": "P/N",
+      "value": "01017027344"
+     }
+    ]
+   }
+  ]
+ },
+ {
+  "num": 24,
+  "code": "71.62.58.548.01.01.013",
+  "type": "apartment",
+  "label": "13",
+  "floor": "2",
+  "area": 31.8,
+  "owners": [
+   {
+    "name_ka": "ირმა ბოჭორიშვილი",
+    "name_en": "Irma Bochorishvili",
+    "type": "person",
+    "ids": [
+     {
+      "kind": "P/N",
+      "value": "01017002288"
+     }
+    ]
+   }
+  ]
+ },
+ {
+  "num": 25,
+  "code": "71.62.58.548.01.01.013ა",
+  "type": "apartment",
+  "label": "13ა",
+  "floor": "2",
+  "area": 30.0,
+  "owners": [
+   {
+    "name_ka": "სვეტლანა დრუჟინინა",
+    "name_en": "Svetlana Druzhinina",
+    "type": "person",
+    "ids": [
+     {
+      "kind": "C/N",
+      "value": "752871208"
+     }
+    ]
+   }
+  ]
+ },
+ {
+  "num": 26,
+  "code": "71.62.58.548.01.01.014",
+  "type": "apartment",
+  "label": "14",
+  "floor": "2",
+  "area": 59.3,
+  "owners": [
+   {
+    "name_ka": "რომან კრუგლი",
+    "name_en": "Roman Krugli",
+    "type": "person",
+    "ids": [
+     {
+      "kind": "P/N",
+      "value": "1980090103636"
+     },
+     {
+      "kind": "C/N",
+      "value": "FH197571"
+     }
+    ]
+   }
+  ]
+ },
+ {
+  "num": 27,
+  "code": "71.62.58.548.01.01.014ა",
+  "type": "apartment",
+  "label": "14ა",
+  "floor": "2",
+  "area": 36.8,
+  "owners": [
+   {
+    "name_ka": "ნინო წერეთელი",
+    "name_en": "Nino Tsereteli",
+    "type": "person",
+    "ids": [
+     {
+      "kind": "P/N",
+      "value": "01024010927"
+     }
+    ]
+   }
+  ]
+ },
+ {
+  "num": 28,
+  "code": "71.62.58.548.01.01.500",
+  "type": "apartment",
+  "label": "15",
+  "floor": "2",
+  "area": 59.3,
+  "owners": [
+   {
+    "name_ka": "სერგეი იგნატიევ",
+    "name_en": "Sergei Ignatiev",
+    "type": "person",
+    "ids": [
+     {
+      "kind": "P/N",
+      "value": "1991041801954"
+     }
+    ]
+   }
+  ]
+ },
+ {
+  "num": 29,
+  "code": "71.62.58.548.01.01.016",
+  "type": "apartment",
+  "label": "16",
+  "floor": "2",
+  "area": 49.3,
+  "owners": [
+   {
+    "name_ka": "თორნიკე მოსიაშვილი",
+    "name_en": "Tornike Mosiashvili",
+    "type": "person",
+    "ids": [
+     {
+      "kind": "P/N",
+      "value": "01019031651"
+     }
+    ]
+   }
+  ]
+ },
+ {
+  "num": 30,
+  "code": "71.62.58.548.01.01.016ა",
+  "type": "apartment",
+  "label": "16ა",
+  "floor": "2",
+  "area": 32.0,
+  "owners": [
+   {
+    "name_ka": "რედი ალის ბალრაჯ",
+    "name_en": "Reddy Alis Balraj",
+    "type": "person",
+    "ids": [
+     {
+      "kind": "P/N",
+      "value": "01791068336"
+     },
+     {
+      "kind": "C/N",
+      "value": "Z6860465"
+     }
+    ]
+   }
+  ]
+ },
+ {
+  "num": 31,
+  "code": "71.62.58.548.01.01.019",
+  "type": "apartment",
+  "label": "19",
+  "floor": "2",
+  "area": 32.0,
+  "owners": [
+   {
+    "name_ka": "თეიმურაზ მერაბიშვილი",
+    "name_en": "Teimuraz Merabishvili",
+    "type": "person",
+    "ids": [
+     {
+      "kind": "P/N",
+      "value": "01025007670"
+     }
+    ]
+   }
+  ]
+ },
+ {
+  "num": 32,
+  "code": "71.62.58.548.01.01.019ა",
+  "type": "apartment",
+  "label": "19ა",
+  "floor": "2",
+  "area": 49.3,
+  "owners": [
+   {
+    "name_ka": "ივან ზაბაუკა",
+    "name_en": "Ivan Zabauka",
+    "type": "person",
+    "ids": [
+     {
+      "kind": "C/N",
+      "value": "KH3108227"
+     }
+    ]
+   },
+   {
+    "name_ka": "სტანდიკ ალიაკსეი",
+    "name_en": "Standik Aliaksei",
+    "type": "person",
+    "ids": [
+     {
+      "kind": "C/N",
+      "value": "MP4040978"
+     }
+    ]
+   },
+   {
+    "name_ka": "სიარჰეი ხრამოვიჩ",
+    "name_en": "Siarhei Khramovich",
+    "type": "person",
+    "ids": [
+     {
+      "kind": "C/N",
+      "value": "MP4372079"
+     }
+    ]
+   }
+  ]
+ },
+ {
+  "num": 33,
+  "code": "71.62.58.548.01.01.501",
+  "type": "apartment",
+  "label": "20",
+  "floor": "2",
+  "area": 59.3,
+  "owners": [
+   {
+    "name_ka": "ფიჯალ მარტა აგნიესზკა",
+    "name_en": "Fijal Marta Agnieszka",
+    "type": "person",
+    "ids": [
+     {
+      "kind": "C/N",
+      "value": "EH7982401"
+     }
+    ]
+   }
+  ]
+ },
+ {
+  "num": 34,
+  "code": "71.62.58.548.01.01.020ა",
+  "type": "apartment",
+  "label": "20ა",
+  "floor": "2",
+  "area": 36.8,
+  "owners": [
+   {
+    "name_ka": "ჯონ ლენი გრინ",
+    "name_en": "John Lenny Green",
+    "type": "person",
+    "ids": [
+     {
+      "kind": "C/N",
+      "value": "PA2990407"
+     }
+    ]
+   }
+  ]
+ },
+ {
+  "num": 35,
+  "code": "71.62.58.548.01.01.021",
+  "type": "apartment",
+  "label": "21",
+  "floor": "3",
+  "area": 59.3,
+  "owners": [
+   {
+    "name_ka": "ირინა რომანოვა",
+    "name_en": "Irina Romanova",
+    "type": "person",
+    "ids": [
+     {
+      "kind": "C/N",
+      "value": "NP6CF94R9"
+     }
+    ]
+   },
+   {
+    "name_ka": "პეპაინ დე ლეუვ",
+    "name_en": "Pepijn De Leeuw",
+    "type": "person",
+    "ids": [
+     {
+      "kind": "C/N",
+      "value": "BXI93HCR1"
+     }
+    ]
+   }
+  ]
+ },
+ {
+  "num": 36,
+  "code": "71.62.58.548.01.01.022",
+  "type": "apartment",
+  "label": "22",
+  "floor": "3",
+  "area": 30.9,
+  "owners": [
+   {
+    "name_ka": "ეთერ კონჭოშვილი",
+    "name_en": "Eter Konchoshvili",
+    "type": "person",
+    "ids": [
+     {
+      "kind": "P/N",
+      "value": "01017010109"
+     }
+    ]
+   }
+  ]
+ },
+ {
+  "num": 37,
+  "code": "71.62.58.548.01.01.022ა",
+  "type": "apartment",
+  "label": "22ა",
+  "floor": "3",
+  "area": 31.8,
+  "owners": [
+   {
+    "name_ka": "ეთერ კონჭოშვილი",
+    "name_en": "Eter Konchoshvili",
+    "type": "person",
+    "ids": [
+     {
+      "kind": "P/N",
+      "value": "01017010109"
+     }
+    ]
+   }
+  ]
+ },
+ {
+  "num": 38,
+  "code": "71.62.58.548.01.01.023",
+  "type": "apartment",
+  "label": "23",
+  "floor": "3",
+  "area": 32.0,
+  "owners": [
+   {
+    "name_ka": "ნონა ლომიძე",
+    "name_en": "Nona Lomidze",
+    "type": "person",
+    "ids": [
+     {
+      "kind": "P/N",
+      "value": "01023004519"
+     }
+    ]
+   }
+  ]
+ },
+ {
+  "num": 39,
+  "code": "71.62.58.548.01.01.023ა",
+  "type": "apartment",
+  "label": "23ა",
+  "floor": "3",
+  "area": 33.3,
+  "owners": [
+   {
+    "name_ka": "ტეტიანა ტარანოვა",
+    "name_en": "Tetiana Taranova",
+    "type": "person",
+    "ids": [
+     {
+      "kind": "C/N",
+      "value": "006127022"
+     }
+    ]
+   }
+  ]
+ },
+ {
+  "num": 40,
+  "code": "71.62.58.548.01.01.024",
+  "type": "apartment",
+  "label": "24",
+  "floor": "3",
+  "area": 33.1,
+  "owners": [
+   {
+    "name_ka": "ტეტიანა ტარანოვა",
+    "name_en": "Tetiana Taranova",
+    "type": "person",
+    "ids": [
+     {
+      "kind": "C/N",
+      "value": "006127022"
+     }
+    ]
+   }
+  ]
+ },
+ {
+  "num": 41,
+  "code": "71.62.58.548.01.01.024ა",
+  "type": "apartment",
+  "label": "24ა",
+  "floor": "3",
+  "area": 33.1,
+  "owners": [
+   {
+    "name_ka": "ბექა კალანდაძე",
+    "name_en": "Beka Kalandadze",
+    "type": "person",
+    "ids": [
+     {
+      "kind": "P/N",
+      "value": "01025004870"
+     }
+    ]
+   }
+  ]
+ },
+ {
+  "num": 42,
+  "code": "71.62.58.548.01.01.025",
+  "type": "apartment",
+  "label": "25",
+  "floor": "3",
+  "area": 33.3,
+  "owners": [
+   {
+    "name_ka": "ნატალია ხლიუსტოვა",
+    "name_en": "Natalia Khliustova",
+    "type": "person",
+    "ids": [
+     {
+      "kind": "C/N",
+      "value": "771758793"
+     }
+    ]
+   }
+  ]
+ },
+ {
+  "num": 43,
+  "code": "71.62.58.548.01.01.025ა",
+  "type": "apartment",
+  "label": "25ა",
+  "floor": "3",
+  "area": 32.0,
+  "owners": [
+   {
+    "name_ka": "მზია იაშვილი",
+    "name_en": "Mzia Iashvili",
+    "type": "person",
+    "ids": [
+     {
+      "kind": "P/N",
+      "value": "01009018035"
+     }
+    ]
+   }
+  ]
+ },
+ {
+  "num": 44,
+  "code": "71.62.58.548.01.01.026",
+  "type": "apartment",
+  "label": "26",
+  "floor": "3",
+  "area": 31.8,
+  "owners": [
+   {
+    "name_ka": "ნატალია ხლიუსტოვა",
+    "name_en": "Natalia Khliustova",
+    "type": "person",
+    "ids": [
+     {
+      "kind": "C/N",
+      "value": "771758793"
+     }
+    ]
+   }
+  ]
+ },
+ {
+  "num": 45,
+  "code": "71.62.58.548.01.01.026ა",
+  "type": "apartment",
+  "label": "26ა",
+  "floor": "3",
+  "area": 30.9,
+  "owners": [
+   {
+    "name_ka": "ტეტიანა ტარანოვა",
+    "name_en": "Tetiana Taranova",
+    "type": "person",
+    "ids": [
+     {
+      "kind": "C/N",
+      "value": "006127022"
+     }
+    ]
+   }
+  ]
+ },
+ {
+  "num": 46,
+  "code": "71.62.58.548.01.01.027",
+  "type": "apartment",
+  "label": "27",
+  "floor": "3",
+  "area": 59.3,
+  "owners": [
+   {
+    "name_ka": "თათია მამადაშვილი",
+    "name_en": "Tatia Mamadashvili",
+    "type": "person",
+    "ids": [
+     {
+      "kind": "P/N",
+      "value": "01008040871"
+     }
+    ]
+   }
+  ]
+ },
+ {
+  "num": 47,
+  "code": "71.62.58.548.01.01.027ა",
+  "type": "apartment",
+  "label": "27ა",
+  "floor": "3",
+  "area": 36.8,
+  "owners": [
+   {
+    "name_ka": "ნინო ხმიადაშვილი",
+    "name_en": "Nino Khmiadashvili",
+    "type": "person",
+    "ids": [
+     {
+      "kind": "P/N",
+      "value": "01002012177"
+     }
+    ]
+   }
+  ]
+ },
+ {
+  "num": 48,
+  "code": "71.62.58.548.01.01.502",
+  "type": "apartment",
+  "label": "28",
+  "floor": "3",
+  "area": 59.3,
+  "owners": [
+   {
+    "name_ka": "ნინო გეორხელიძე",
+    "name_en": "Nino Georkhelidze",
+    "type": "person",
+    "ids": [
+     {
+      "kind": "P/N",
+      "value": "01017035160"
+     }
+    ]
+   }
+  ]
+ },
+ {
+  "num": 49,
+  "code": "71.62.58.548.01.01.029",
+  "type": "apartment",
+  "label": "29",
+  "floor": "3",
+  "area": 49.3,
+  "owners": [
+   {
+    "name_ka": "დავით მელიქიძე",
+    "name_en": "Davit Melikidze",
+    "type": "person",
+    "ids": [
+     {
+      "kind": "P/N",
+      "value": "01030027528"
+     }
+    ]
+   }
+  ]
+ },
+ {
+  "num": 50,
+  "code": "71.62.58.548.01.01.029ა",
+  "type": "apartment",
+  "label": "29ა",
+  "floor": "3",
+  "area": 32.0,
+  "owners": [
+   {
+    "name_ka": "ია ხიდაშელი",
+    "name_en": "Ia Khidasheli",
+    "type": "person",
+    "ids": [
+     {
+      "kind": "P/N",
+      "value": "01025003409"
+     }
+    ]
+   },
+   {
+    "name_ka": "ალექსი სიმონიშვილი",
+    "name_en": "Aleksi Simonishvili",
+    "type": "person",
+    "ids": [
+     {
+      "kind": "P/N",
+      "value": "01020003679"
+     }
+    ]
+   }
+  ]
+ },
+ {
+  "num": 51,
+  "code": "71.62.58.548.01.01.030",
+  "type": "apartment",
+  "label": "30",
+  "floor": "3",
+  "area": 59.8,
+  "owners": [
+   {
+    "name_ka": "დავით გულორდავა",
+    "name_en": "Davit Gulordava",
+    "type": "person",
+    "ids": [
+     {
+      "kind": "P/N",
+      "value": "01008044070"
+     }
+    ]
+   }
+  ]
+ },
+ {
+  "num": 52,
+  "code": "71.62.58.548.01.01.031",
+  "type": "apartment",
+  "label": "31",
+  "floor": "3",
+  "area": 57.2,
+  "owners": [
+   {
+    "name_ka": "ჯაკუბ ლიტინსკი",
+    "name_en": "Jakub Litinski",
+    "type": "person",
+    "ids": [
+     {
+      "kind": "C/N",
+      "value": "EH7786537"
+     }
+    ]
+   }
+  ]
+ },
+ {
+  "num": 53,
+  "code": "71.62.58.548.01.01.032",
+  "type": "apartment",
+  "label": "32",
+  "floor": "3",
+  "area": 32.0,
+  "owners": [
+   {
+    "name_ka": "ლევან ოთიაშვილი",
+    "name_en": "Levan Otiashvili",
+    "type": "person",
+    "ids": [
+     {
+      "kind": "P/N",
+      "value": "01019022120"
+     }
+    ]
+   }
+  ]
+ },
+ {
+  "num": 54,
+  "code": "71.62.58.548.01.01.032ა",
+  "type": "apartment",
+  "label": "32ა",
+  "floor": "3",
+  "area": 49.3,
+  "owners": [
+   {
+    "name_ka": "თეონა ხვედელიანი",
+    "name_en": "Teona Khvedeliani",
+    "type": "person",
+    "ids": [
+     {
+      "kind": "P/N",
+      "value": "01008011771"
+     }
+    ]
+   }
+  ]
+ },
+ {
+  "num": 55,
+  "code": "71.62.58.548.01.01.033",
+  "type": "apartment",
+  "label": "33",
+  "floor": "3",
+  "area": 59.3,
+  "owners": [
+   {
+    "name_ka": "სვეტლა კირილოვა პარკერ",
+    "name_en": "Svetla Kirilova Parker",
+    "type": "person",
+    "ids": [
+     {
+      "kind": "C/N",
+      "value": "649685673"
+     }
+    ]
+   },
+   {
+    "name_ka": "ანნ მეგარგი გრიფინ",
+    "name_en": "Ann Megargee Griffin",
+    "type": "person",
+    "ids": [
+     {
+      "kind": "C/N",
+      "value": "566159046"
+     }
+    ]
+   }
+  ]
+ },
+ {
+  "num": 56,
+  "code": "71.62.58.548.01.01.033ა",
+  "type": "apartment",
+  "label": "33ა",
+  "floor": "3",
+  "area": 36.8,
+  "owners": [
+   {
+    "name_ka": "ხათუნა დანელია",
+    "name_en": "Khatuna Danelia",
+    "type": "person",
+    "ids": [
+     {
+      "kind": "P/N",
+      "value": "01024024038"
+     }
+    ]
+   }
+  ]
+ },
+ {
+  "num": 57,
+  "code": "71.62.58.548.01.01.034",
+  "type": "apartment",
+  "label": "34",
+  "floor": "4",
+  "area": 59.3,
+  "owners": [
+   {
+    "name_ka": "იულონი ბეჟანიშვილი",
+    "name_en": "Iuloni Bezhanishvili",
+    "type": "person",
+    "ids": [
+     {
+      "kind": "P/N",
+      "value": "31001001226"
+     }
+    ]
+   }
+  ]
+ },
+ {
+  "num": 58,
+  "code": "71.62.58.548.01.01.035",
+  "type": "apartment",
+  "label": "35",
+  "floor": "4",
+  "area": 30.9,
+  "owners": [
+   {
+    "name_ka": "ნატო ქააძე",
+    "name_en": "Nato Kaadze",
+    "type": "person",
+    "ids": [
+     {
+      "kind": "P/N",
+      "value": "01027089857"
+     }
+    ]
+   }
+  ]
+ },
+ {
+  "num": 59,
+  "code": "71.62.58.548.01.01.035ა",
+  "type": "apartment",
+  "label": "35ა",
+  "floor": "4",
+  "area": 31.8,
+  "owners": [
+   {
+    "name_ka": "გაი ფახური",
+    "name_en": "Guy Fakhoury",
+    "type": "person",
+    "ids": [
+     {
+      "kind": "C/N",
+      "value": "LR2319189"
+     }
+    ]
+   }
+  ]
+ },
+ {
+  "num": 60,
+  "code": "71.62.58.548.01.01.036",
+  "type": "apartment",
+  "label": "36",
+  "floor": "4",
+  "area": 32.0,
+  "owners": [
+   {
+    "name_ka": "ქეთევან ლეჟავა",
+    "name_en": "Ketevan Lezhava",
+    "type": "person",
+    "ids": [
+     {
+      "kind": "P/N",
+      "value": "01023000461"
+     }
+    ]
+   }
+  ]
+ },
+ {
+  "num": 61,
+  "code": "71.62.58.548.01.01.036ა",
+  "type": "apartment",
+  "label": "36ა",
+  "floor": "4",
+  "area": 33.3,
+  "owners": [
+   {
+    "name_ka": "კსენია კარელინა",
+    "name_en": "Ksenia Karelina",
+    "type": "person",
+    "ids": [
+     {
+      "kind": "C/N",
+      "value": "724144366"
+     }
+    ]
+   }
+  ]
+ },
+ {
+  "num": 62,
+  "code": "71.62.58.548.01.01.037",
+  "type": "apartment",
+  "label": "37",
+  "floor": "4",
+  "area": 33.1,
+  "owners": [
+   {
+    "name_ka": "თამარ ჩხაიძე",
+    "name_en": "Tamar Chkhaidze",
+    "type": "person",
+    "ids": [
+     {
+      "kind": "P/N",
+      "value": "01005009256"
+     }
+    ]
+   }
+  ]
+ },
+ {
+  "num": 63,
+  "code": "71.62.58.548.01.01.038",
+  "type": "apartment",
+  "label": "38",
+  "floor": "4",
+  "area": 33.3,
+  "owners": [
+   {
+    "name_ka": "იური კოლპაკ",
+    "name_en": "Iuri Kolpak",
+    "type": "person",
+    "ids": [
+     {
+      "kind": "P/N",
+      "value": "3050175A030PB4"
+     },
+     {
+      "kind": "C/N",
+      "value": "MP4433152"
+     }
+    ]
+   }
+  ]
+ },
+ {
+  "num": 64,
+  "code": "71.62.58.548.01.01.038ა",
+  "type": "apartment",
+  "label": "38ა",
+  "floor": "4",
+  "area": 32.0,
+  "owners": [
+   {
+    "name_ka": "გიორგი კაკულია",
+    "name_en": "Giorgi Kakulia",
+    "type": "person",
+    "ids": [
+     {
+      "kind": "P/N",
+      "value": "01019011173"
+     }
+    ]
+   }
+  ]
+ },
+ {
+  "num": 65,
+  "code": "71.62.58.548.01.01.039",
+  "type": "apartment",
+  "label": "39",
+  "floor": "4",
+  "area": 31.8,
+  "owners": [
+   {
+    "name_ka": "ლევან კილაძე",
+    "name_en": "Levan Kiladze",
+    "type": "person",
+    "ids": [
+     {
+      "kind": "P/N",
+      "value": "01024034981"
+     }
+    ]
+   }
+  ]
+ },
+ {
+  "num": 66,
+  "code": "71.62.58.548.01.01.039ა",
+  "type": "apartment",
+  "label": "39ა",
+  "floor": "4",
+  "area": 30.9,
+  "owners": [
+   {
+    "name_ka": "იანნიკ მაისონ ვან დრააენ",
+    "name_en": "Yannick Maison Van Draanen",
+    "type": "person",
+    "ids": [
+     {
+      "kind": "P/N",
+      "value": "BFD4LPBJ5"
+     }
+    ]
+   },
+   {
+    "name_ka": "ქსინიაი ცაი",
+    "name_en": "Xinyi Cai",
+    "type": "person",
+    "ids": [
+     {
+      "kind": "P/N",
+      "value": "EJ5052017"
+     }
+    ]
+   }
+  ]
+ },
+ {
+  "num": 67,
+  "code": "71.62.58.548.01.01.040",
+  "type": "apartment",
+  "label": "40",
+  "floor": "4",
+  "area": 59.3,
+  "owners": [
+   {
+    "name_ka": "ალექსანდრ კურბატოვ",
+    "name_en": "Aleksandr Kurbatov",
+    "type": "person",
+    "ids": [
+     {
+      "kind": "C/N",
+      "value": "724726408"
+     }
+    ]
+   }
+  ]
+ },
+ {
+  "num": 68,
+  "code": "71.62.58.548.01.01.040ა",
+  "type": "apartment",
+  "label": "40ა",
+  "floor": "4",
+  "area": 36.8,
+  "owners": [
+   {
+    "name_ka": "ხათუნა დანელია",
+    "name_en": "Khatuna Danelia",
+    "type": "person",
+    "ids": [
+     {
+      "kind": "P/N",
+      "value": "01024024038"
+     }
+    ]
+   }
+  ]
+ },
+ {
+  "num": 69,
+  "code": "71.62.58.548.01.01.041",
+  "type": "apartment",
+  "label": "41",
+  "floor": "4",
+  "area": 59.3,
+  "owners": [
+   {
+    "name_ka": "სტეფან ჯაკოლინო",
+    "name_en": "Stephane Jacolino",
+    "type": "person",
+    "ids": [
+     {
+      "kind": "C/N",
+      "value": "18FI29552"
+     }
+    ]
+   },
+   {
+    "name_ka": "სიმონ ფრანკოის ბელონია",
+    "name_en": "Simon Francois Bellonia",
+    "type": "person",
+    "ids": [
+     {
+      "kind": "C/N",
+      "value": "NP04D81L1"
+     }
+    ]
+   }
+  ]
+ },
+ {
+  "num": 70,
+  "code": "71.62.58.548.01.01.042",
+  "type": "apartment",
+  "label": "42",
+  "floor": "4",
+  "area": 49.3,
+  "owners": [
+   {
+    "name_ka": "მაგდალენა ალაშკიევიჩ",
+    "name_en": "Magdalena Alaszkiewicz",
+    "type": "person",
+    "ids": [
+     {
+      "kind": "P/N",
+      "value": "85010903806"
+     },
+     {
+      "kind": "C/N",
+      "value": "ES234332"
+     }
+    ]
+   }
+  ]
+ },
+ {
+  "num": 71,
+  "code": "71.62.58.548.01.01.042ა",
+  "type": "apartment",
+  "label": "42ა",
+  "floor": "4",
+  "area": 32.0,
+  "owners": [
+   {
+    "name_ka": "ნათია მახარობლიძე",
+    "name_en": "Natia Makharoblidze",
+    "type": "person",
+    "ids": [
+     {
+      "kind": "P/N",
+      "value": "01006005680"
+     }
+    ]
+   }
+  ]
+ },
+ {
+  "num": 72,
+  "code": "71.62.58.548.01.01.043",
+  "type": "apartment",
+  "label": "43",
+  "floor": "4",
+  "area": 59.8,
+  "owners": [
+   {
+    "name_ka": "ქეთევან წულუკიძე",
+    "name_en": "Ketevan Tsulukidze",
+    "type": "person",
+    "ids": [
+     {
+      "kind": "P/N",
+      "value": "01024066605"
+     }
+    ]
+   }
+  ]
+ },
+ {
+  "num": 73,
+  "code": "71.62.58.548.01.01.044",
+  "type": "apartment",
+  "label": "44",
+  "floor": "4",
+  "area": 57.2,
+  "owners": [
+   {
+    "name_ka": "ფილიპ მარცინ",
+    "name_en": "Filip Marcin",
+    "type": "person",
+    "ids": [
+     {
+      "kind": "C/N",
+      "value": "ET8941492"
+     }
+    ]
+   }
+  ]
+ },
+ {
+  "num": 74,
+  "code": "71.62.58.548.01.01.045",
+  "type": "apartment",
+  "label": "45",
+  "floor": "4",
+  "area": 32.0,
+  "owners": [
+   {
+    "name_ka": "დამირ იანაევ",
+    "name_en": "Damir Ianaev",
+    "type": "person",
+    "ids": [
+     {
+      "kind": "C/N",
+      "value": "760891714"
+     }
+    ]
+   }
+  ]
+ },
+ {
+  "num": 75,
+  "code": "71.62.58.548.01.01.045ა",
+  "type": "apartment",
+  "label": "45ა",
+  "floor": "4",
+  "area": 49.3,
+  "owners": [
+   {
+    "name_ka": "ჯონ კრისტიან აბელ",
+    "name_en": "John Christian Abel",
+    "type": "person",
+    "ids": [
+     {
+      "kind": "C/N",
+      "value": "E4088101"
+     }
+    ]
+   },
+   {
+    "name_ka": "ოქს სინ ჩოი",
+    "name_en": "Ok Shin Choi",
+    "type": "person",
+    "ids": [
+     {
+      "kind": "C/N",
+      "value": "M92757227"
+     }
+    ]
+   }
+  ]
+ },
+ {
+  "num": 76,
+  "code": "71.62.58.548.01.01.046",
+  "type": "apartment",
+  "label": "46",
+  "floor": "4",
+  "area": 59.3,
+  "owners": [
+   {
+    "name_ka": "ნიკოლოზ ქურდიანი",
+    "name_en": "Nikoloz Kurdiani",
+    "type": "person",
+    "ids": [
+     {
+      "kind": "P/N",
+      "value": "01030020342"
+     }
+    ]
+   }
+  ]
+ },
+ {
+  "num": 77,
+  "code": "71.62.58.548.01.01.046ა",
+  "type": "apartment",
+  "label": "46ა",
+  "floor": "4",
+  "area": 36.8,
+  "owners": [
+   {
+    "name_ka": "გიორგი სულამანიძე",
+    "name_en": "Giorgi Sulamanidze",
+    "type": "person",
+    "ids": [
+     {
+      "kind": "P/N",
+      "value": "01006010212"
+     }
+    ]
+   }
+  ]
+ },
+ {
+  "num": 78,
+  "code": "71.62.58.548.01.01.047",
+  "type": "apartment",
+  "label": "47",
+  "floor": "M",
+  "area": 60.3,
+  "owners": [
+   {
+    "name_ka": "სალი ანნ დუ პრიზ",
+    "name_en": "Sally Ann",
+    "type": "person",
+    "ids": [
+     {
+      "kind": "C/N",
+      "value": "A04551481"
+     }
+    ]
+   },
+   {
+    "name_ka": "კარლ დასტინ დუ პრიზ",
+    "name_en": "Carl Dustin Du Preez",
+    "type": "person",
+    "ids": [
+     {
+      "kind": "C/N",
+      "value": "M001902721"
+     }
+    ]
+   }
+  ]
+ },
+ {
+  "num": 79,
+  "code": "71.62.58.548.01.01.048",
+  "type": "apartment",
+  "label": "48",
+  "floor": "M",
+  "area": 30.9,
+  "owners": [
+   {
+    "name_ka": "დავიდ არტჰურ გოულდ",
+    "name_en": "David Arthur Gould",
+    "type": "person",
+    "ids": [
+     {
+      "kind": "C/N",
+      "value": "530859012"
+     }
+    ]
+   }
+  ]
+ },
+ {
+  "num": 80,
+  "code": "71.62.58.548.01.01.048ა",
+  "type": "apartment",
+  "label": "48ა",
+  "floor": "M",
+  "area": 31.1,
+  "owners": [
+   {
+    "name_ka": "რუსუდან დიდებულიძე",
+    "name_en": "Rusudan Didebulidze",
+    "type": "person",
+    "ids": [
+     {
+      "kind": "P/N",
+      "value": "01024005270"
+     }
+    ]
+   }
+  ]
+ },
+ {
+  "num": 81,
+  "code": "71.62.58.548.01.01.049",
+  "type": "apartment",
+  "label": "49",
+  "floor": "M",
+  "area": 31.3,
+  "owners": [
+   {
+    "name_ka": "ნაომი ნიშიურა",
+    "name_en": "Naomi Nishiura",
+    "type": "person",
+    "ids": [
+     {
+      "kind": "C/N",
+      "value": "TR6036636"
+     }
+    ]
+   }
+  ]
+ },
+ {
+  "num": 82,
+  "code": "71.62.58.548.01.01.049ა",
+  "type": "apartment",
+  "label": "49ა",
+  "floor": "M",
+  "area": 33.3,
+  "owners": [
+   {
+    "name_ka": "სერგიი სკაჩეკ",
+    "name_en": "Sergii Skachek",
+    "type": "person",
+    "ids": [
+     {
+      "kind": "C/N",
+      "value": "FF594329"
+     }
+    ]
+   }
+  ]
+ },
+ {
+  "num": 83,
+  "code": "71.62.58.548.01.01.050",
+  "type": "apartment",
+  "label": "50",
+  "floor": "M",
+  "area": 33.1,
+  "owners": [
+   {
+    "name_ka": "ნაომი ნიშიურა",
+    "name_en": "Naomi Nishiura",
+    "type": "person",
+    "ids": [
+     {
+      "kind": "C/N",
+      "value": "TR6036636"
+     }
+    ]
+   }
+  ]
+ },
+ {
+  "num": 84,
+  "code": "71.62.58.548.01.01.050ა",
+  "type": "apartment",
+  "label": "50ა",
+  "floor": "M",
+  "area": 33.1,
+  "owners": [
+   {
+    "name_ka": "პაბლო ლეგარდა ბეატო",
+    "name_en": "Pablo Legarda Beato",
+    "type": "person",
+    "ids": [
+     {
+      "kind": "C/N",
+      "value": "PAV256717"
+     }
+    ]
+   }
+  ]
+ },
+ {
+  "num": 85,
+  "code": "71.62.58.548.01.01.051",
+  "type": "apartment",
+  "label": "51",
+  "floor": "M",
+  "area": 33.3,
+  "owners": [
+   {
+    "name_ka": "პაბლო ლეგარდა ბეატო",
+    "name_en": "Pablo Legarda Beato",
+    "type": "person",
+    "ids": [
+     {
+      "kind": "C/N",
+      "value": "PAV256717"
+     }
+    ]
+   }
+  ]
+ },
+ {
+  "num": 86,
+  "code": "71.62.58.548.01.01.051ა",
+  "type": "apartment",
+  "label": "51ა",
+  "floor": "M",
+  "area": 31.3,
+  "owners": [
+   {
+    "name_ka": "ნაჩმან იშაკ (ზივიჩა) ზივ",
+    "name_en": "Nachman Yitzhak",
+    "type": "person",
+    "ids": [
+     {
+      "kind": "C/N",
+      "value": "31840647"
+     }
+    ]
+   },
+   {
+    "name_ka": "დევორაჰ (ზივიჩა) ზივ",
+    "name_en": "Devorah Ziv",
+    "type": "person",
+    "ids": [
+     {
+      "kind": "C/N",
+      "value": "32719597"
+     }
+    ]
+   }
+  ]
+ },
+ {
+  "num": 87,
+  "code": "71.62.58.548.01.01.052",
+  "type": "apartment",
+  "label": "52",
+  "floor": "M",
+  "area": 31.1,
+  "owners": [
+   {
+    "name_ka": "დოჰნალ ჯირი",
+    "name_en": "Dohnal Jiri",
+    "type": "person",
+    "ids": [
+     {
+      "kind": "C/N",
+      "value": "45614528"
+     }
+    ]
+   }
+  ]
+ },
+ {
+  "num": 88,
+  "code": "71.62.58.548.01.01.052ა",
+  "type": "apartment",
+  "label": "52ა",
+  "floor": "M",
+  "area": 30.9,
+  "owners": [
+   {
+    "name_ka": "პიტერ ვარეხა",
+    "name_en": "Peter Varecha",
+    "type": "person",
+    "ids": [
+     {
+      "kind": "P/N",
+      "value": "6105181478"
+     },
+     {
+      "kind": "C/N",
+      "value": "45767167"
+     }
+    ]
+   }
+  ]
+ },
+ {
+  "num": 89,
+  "code": "71.62.58.548.01.01.053",
+  "type": "apartment",
+  "label": "53",
+  "floor": "M",
+  "area": 60.3,
+  "owners": [
+   {
+    "name_ka": "პიტერ ვარეხა",
+    "name_en": "Peter Varecha",
+    "type": "person",
+    "ids": [
+     {
+      "kind": "P/N",
+      "value": "6105181478"
+     },
+     {
+      "kind": "C/N",
+      "value": "45767167"
+     }
+    ]
+   }
+  ]
+ },
+ {
+  "num": 90,
+  "code": "71.62.58.548.01.01.053ა",
+  "type": "apartment",
+  "label": "53ა",
+  "floor": "M",
+  "area": 36.9,
+  "owners": [
+   {
+    "name_ka": "შალვა გაწერელია",
+    "name_en": "Shalva Gatserelia",
+    "type": "person",
+    "ids": [
+     {
+      "kind": "P/N",
+      "value": "01808064406"
+     }
+    ]
+   }
+  ]
+ },
+ {
+  "num": 91,
+  "code": "71.62.58.548.01.01.054",
+  "type": "apartment",
+  "label": "54",
+  "floor": "M",
+  "area": 60.3,
+  "owners": [
+   {
+    "name_ka": "მიშალ ზივ (ზივიჩა)",
+    "name_en": "Michal",
+    "type": "person",
+    "ids": [
+     {
+      "kind": "C/N",
+      "value": "30435695"
+     }
+    ]
+   },
+   {
+    "name_ka": "იეჰუდა არიე ზივ (ზივიჩა)",
+    "name_en": "Yehuda Arie Ziv",
+    "type": "person",
+    "ids": [
+     {
+      "kind": "C/N",
+      "value": "32945720"
+     }
+    ]
+   }
+  ]
+ },
+ {
+  "num": 92,
+  "code": "71.62.58.548.01.01.055",
+  "type": "apartment",
+  "label": "55",
+  "floor": "M",
+  "area": 48.6,
+  "owners": [
+   {
+    "name_ka": "დევორაჰ ზივ",
+    "name_en": "Devorah",
+    "type": "person",
+    "ids": [
+     {
+      "kind": "C/N",
+      "value": "32719597"
+     }
+    ]
+   },
+   {
+    "name_ka": "ნაჩმან იშაკ ზივ",
+    "name_en": "Nachman Yitzhak Ziv",
+    "type": "person",
+    "ids": [
+     {
+      "kind": "C/N",
+      "value": "31840647"
+     }
+    ]
+   }
+  ]
+ },
+ {
+  "num": 93,
+  "code": "71.62.58.548.01.01.056",
+  "type": "apartment",
+  "label": "56",
+  "floor": "M",
+  "area": 59.7,
+  "owners": [
+   {
+    "name_ka": "ანდრეი მინაევ",
+    "name_en": "Andrei Minaev",
+    "type": "person",
+    "ids": [
+     {
+      "kind": "C/N",
+      "value": "66N1991885"
+     }
+    ]
+   }
+  ]
+ },
+ {
+  "num": 94,
+  "code": "71.62.58.548.01.01.058",
+  "type": "apartment",
+  "label": "58",
+  "floor": "M",
+  "area": 31.3,
+  "owners": [
+   {
+    "name_ka": "თამარ პრიჩარდ",
+    "name_en": "Tamar Pritchard",
+    "type": "person",
+    "ids": [
+     {
+      "kind": "P/N",
+      "value": "2000122905500"
+     },
+     {
+      "kind": "C/N",
+      "value": "FG714298"
+     }
+    ]
+   }
+  ]
+ },
+ {
+  "num": 95,
+  "code": "71.62.58.548.01.01.058ა",
+  "type": "apartment",
+  "label": "58ა",
+  "floor": "M",
+  "area": 48.6,
+  "owners": [
+   {
+    "name_ka": "კატარინა კუჩალსკა",
+    "name_en": "Katarina Kuchalska",
+    "type": "person",
+    "ids": [
+     {
+      "kind": "C/N",
+      "value": "FH156010"
+     }
+    ]
+   }
+  ]
+ },
+ {
+  "num": 96,
+  "code": "71.62.58.548.01.01.059",
+  "type": "apartment",
+  "label": "59",
+  "floor": "M",
+  "area": 60.3,
+  "owners": [
+   {
+    "name_ka": "სკოტ დანიელ ქემიშ",
+    "name_en": "Scott Daniel Kemish",
+    "type": "person",
+    "ids": [
+     {
+      "kind": "C/N",
+      "value": "554049855"
+     }
+    ]
+   },
+   {
+    "name_ka": "დიენ ლუის გალაგერ",
+    "name_en": "Diane Louise Gallagher",
+    "type": "person",
+    "ids": [
+     {
+      "kind": "C/N",
+      "value": "548281178"
+     }
+    ]
+   }
+  ]
+ },
+ {
+  "num": 97,
+  "code": "71.62.58.548.01.01.059ა",
+  "type": "apartment",
+  "label": "59ა",
+  "floor": "M",
+  "area": 36.9,
+  "owners": [
+   {
+    "name_ka": "ალექსანდრე ბლუაშვილი",
+    "name_en": "Aleksandre Bluashvili",
+    "type": "person",
+    "ids": [
+     {
+      "kind": "P/N",
+      "value": "59001071306"
+     }
+    ]
+   }
+  ]
+ },
+ {
+  "num": 98,
+  "code": "71.62.58.548.01.02.023",
+  "type": "auxiliary",
+  "label": "23",
+  "floor": "1",
+  "area": 26.4,
+  "owners": [
+   {
+    "name_ka": "შპს \"წიფორი\"",
+    "name_en": "LLC \"Tsipori\"",
+    "type": "company",
+    "ids": [
+     {
+      "kind": "ID",
+      "value": "429326428"
+     }
+    ]
+   }
+  ]
+ },
+ {
+  "num": 99,
+  "code": "71.62.58.548.01.03.001",
+  "type": "commercial",
+  "label": "1",
+  "floor": "1",
+  "area": 58.3,
+  "owners": [
+   {
+    "name_ka": "შპს \"ირიშ-ჯორჯია\"",
+    "name_en": "LLC \"Irish-Georgia\"",
+    "type": "company",
+    "ids": [
+     {
+      "kind": "ID",
+      "value": "406290507"
+     }
+    ]
+   }
+  ]
+ },
+ {
+  "num": 100,
+  "code": "71.62.58.548.01.03.002",
+  "type": "commercial",
+  "label": "2",
+  "floor": "1",
+  "area": 77.0,
+  "owners": [
+   {
+    "name_ka": "შპს \"წიფორი\"",
+    "name_en": "LLC \"Tsipori\"",
+    "type": "company",
+    "ids": [
+     {
+      "kind": "ID",
+      "value": "429326428"
+     }
+    ]
+   }
+  ]
+ },
+ {
+  "num": 101,
+  "code": "71.62.58.548.01.03.003",
+  "type": "commercial",
+  "label": "3",
+  "floor": "1",
+  "area": 77.0,
+  "owners": [
+   {
+    "name_ka": "შპს \"გუდაური 1986\"",
+    "name_en": "LLC \"Gudauri 1986\"",
+    "type": "company",
+    "ids": [
+     {
+      "kind": "ID",
+      "value": "429333848"
+     }
+    ]
+   }
+  ]
+ },
+ {
+  "num": 102,
+  "code": "71.62.58.548.01.04.001",
+  "type": "parking",
+  "label": "1",
+  "floor": "-1",
+  "area": 28.9,
+  "owners": [
+   {
+    "name_ka": "პიტერ ვარეხა",
+    "name_en": "Peter Varecha",
+    "type": "person",
+    "ids": [
+     {
+      "kind": "P/N",
+      "value": "6105181478"
+     },
+     {
+      "kind": "C/N",
+      "value": "45767167"
+     }
+    ]
+   }
+  ]
+ },
+ {
+  "num": 103,
+  "code": "71.62.58.548.01.04.002",
+  "type": "parking",
+  "label": "2",
+  "floor": "-1",
+  "area": 15.7,
+  "owners": [
+   {
+    "name_ka": "ნიკოლოზ ქურდიანი",
+    "name_en": "Nikoloz Kurdiani",
+    "type": "person",
+    "ids": [
+     {
+      "kind": "P/N",
+      "value": "01030020342"
+     }
+    ]
+   }
+  ]
+ },
+ {
+  "num": 104,
+  "code": "71.62.58.548.01.04.003",
+  "type": "parking",
+  "label": "3",
+  "floor": "-1",
+  "area": 15.4,
+  "owners": [
+   {
+    "name_ka": "რედი ალის ბალრაჯ",
+    "name_en": "Reddy Alis Balraj",
+    "type": "person",
+    "ids": [
+     {
+      "kind": "P/N",
+      "value": "01791068336"
+     },
+     {
+      "kind": "C/N",
+      "value": "Z6860465"
+     }
+    ]
+   }
+  ]
+ },
+ {
+  "num": 105,
+  "code": "71.62.58.548.01.04.006",
+  "type": "parking",
+  "label": "6",
+  "floor": "-1",
+  "area": 15.4,
+  "owners": [
+   {
+    "name_ka": "აშოტ არუთიუნოვი",
+    "name_en": "Ashot Arutiunovi",
+    "type": "person",
+    "ids": [
+     {
+      "kind": "C/N",
+      "value": "753452785"
+     }
+    ]
+   }
+  ]
+ },
+ {
+  "num": 106,
+  "code": "71.62.58.548.01.04.007",
+  "type": "parking",
+  "label": "7",
+  "floor": "-1",
+  "area": 15.7,
+  "owners": [
+   {
+    "name_ka": "ნონა ლომიძე",
+    "name_en": "Nona Lomidze",
+    "type": "person",
+    "ids": [
+     {
+      "kind": "P/N",
+      "value": "01023004519"
+     }
+    ]
+   }
+  ]
+ },
+ {
+  "num": 107,
+  "code": "71.62.58.548.01.04.013",
+  "type": "parking",
+  "label": "13",
+  "floor": "-1",
+  "area": 15.7,
+  "owners": [
+   {
+    "name_ka": "სვეტა კირილოვა პარკერ",
+    "name_en": "Sveta Kirilova Parker",
+    "type": "person",
+    "ids": [
+     {
+      "kind": "P/N",
+      "value": "7501236938"
+     },
+     {
+      "kind": "C/N",
+      "value": "387118067"
+     }
+    ]
+   }
+  ]
+ },
+ {
+  "num": 108,
+  "code": "71.62.58.548.01.04.014",
+  "type": "parking",
+  "label": "14",
+  "floor": "-1",
+  "area": 15.7,
+  "owners": [
+   {
+    "name_ka": "დავით გულორდავა",
+    "name_en": "Davit Gulordava",
+    "type": "person",
+    "ids": [
+     {
+      "kind": "P/N",
+      "value": "01008044070"
+     }
+    ]
+   }
+  ]
+ },
+ {
+  "num": 109,
+  "code": "71.62.58.548.01.04.020",
+  "type": "parking",
+  "label": "20",
+  "floor": "-1",
+  "area": 28.4,
+  "owners": [
+   {
+    "name_ka": "ბექა კალანდაძე",
+    "name_en": "Beka Kalandadze",
+    "type": "person",
+    "ids": [
+     {
+      "kind": "P/N",
+      "value": "01025004870"
+     }
+    ]
+   }
+  ]
+ },
+ {
+  "num": 110,
+  "code": "71.62.58.548.01.04.021",
+  "type": "parking",
+  "label": "21",
+  "floor": "-1",
+  "area": 28.0,
+  "owners": [
+   {
+    "name_ka": "ბექა კალანდაძე",
+    "name_en": "Beka Kalandadze",
+    "type": "person",
+    "ids": [
+     {
+      "kind": "P/N",
+      "value": "01025004870"
+     }
+    ]
+   }
+  ]
+ },
+ {
+  "num": 111,
+  "code": "71.62.58.548.01.04.022",
+  "type": "parking",
+  "label": "22",
+  "floor": "-1",
+  "area": 22.7,
+  "owners": [
+   {
+    "name_ka": "დევორაჰ ზივ",
+    "name_en": "Devorah",
+    "type": "person",
+    "ids": [
+     {
+      "kind": "C/N",
+      "value": "32719597"
+     }
+    ]
+   },
+   {
+    "name_ka": "ნაჩმან იშაკ ზივ",
+    "name_en": "Nachman Yitzhak Ziv",
+    "type": "person",
+    "ids": [
+     {
+      "kind": "C/N",
+      "value": "31840647"
+     }
+    ]
+   }
+  ]
+ },
+ {
+  "num": 112,
+  "code": "71.62.58.548.01.04.023",
+  "type": "parking",
+  "label": "23",
+  "floor": "-1",
+  "area": 15.1,
+  "owners": [
+   {
+    "name_ka": "სტეფან ჯაკოლინო",
+    "name_en": "Stephane Jacolino",
+    "type": "person",
+    "ids": [
+     {
+      "kind": "C/N",
+      "value": "18FI29552"
+     }
+    ]
+   },
+   {
+    "name_ka": "სიმონ ფრანკოის ბელონია",
+    "name_en": "Simon Francois Bellonia",
+    "type": "person",
+    "ids": [
+     {
+      "kind": "C/N",
+      "value": "NP04D81L1"
+     }
+    ]
+   }
+  ]
+ },
+ {
+  "num": 113,
+  "code": "71.62.58.548.01.04.025",
+  "type": "parking",
+  "label": "25",
+  "floor": "-1",
+  "area": 16.7,
+  "owners": [
+   {
+    "name_ka": "დევორაჰ ზივ",
+    "name_en": "Devorah",
+    "type": "person",
+    "ids": [
+     {
+      "kind": "C/N",
+      "value": "32719597"
+     }
+    ]
+   },
+   {
+    "name_ka": "ნაჩმან იშაკ ზივ",
+    "name_en": "Nachman Yitzhak Ziv",
+    "type": "person",
+    "ids": [
+     {
+      "kind": "C/N",
+      "value": "31840647"
+     }
+    ]
+   }
+  ]
+ },
+ {
+  "num": 114,
+  "code": "71.62.58.548.01.04.026",
+  "type": "parking",
+  "label": "26",
+  "floor": "-1",
+  "area": 16.1,
+  "owners": [
+   {
+    "name_ka": "მედიკო ხადური",
+    "name_en": "Mediko Khaduri",
+    "type": "person",
+    "ids": [
+     {
+      "kind": "P/N",
+      "value": "01008007656"
+     }
+    ]
+   }
+  ]
+ },
+ {
+  "num": 115,
+  "code": "71.62.58.548.01.04.027",
+  "type": "parking",
+  "label": "27",
+  "floor": "-1",
+  "area": 15.5,
+  "owners": [
+   {
+    "name_ka": "ქეთევან წულუკიძე",
+    "name_en": "Ketevan Tsulukidze",
+    "type": "person",
+    "ids": [
+     {
+      "kind": "P/N",
+      "value": "01024066605"
+     }
+    ]
+   }
+  ]
+ },
+ {
+  "num": 116,
+  "code": "71.62.58.548.01.04.028",
+  "type": "parking",
+  "label": "28",
+  "floor": "-1",
+  "area": 15.1,
+  "owners": [
+   {
+    "name_ka": "თენგიზი ჩადუნელი",
+    "name_en": "Tengizi Chaduneli",
+    "type": "person",
+    "ids": [
+     {
+      "kind": "P/N",
+      "value": "01006018902"
+     }
+    ]
+   }
+  ]
+ },
+ {
+  "num": 117,
+  "code": "71.62.58.548.01.04.029",
+  "type": "parking",
+  "label": "29",
+  "floor": "-1",
+  "area": 22.7,
+  "owners": [
+   {
+    "name_ka": "პიტერ ვარეხა",
+    "name_en": "Peter Varecha",
+    "type": "person",
+    "ids": [
+     {
+      "kind": "P/N",
+      "value": "6105181478"
+     },
+     {
+      "kind": "C/N",
+      "value": "45767167"
+     }
+    ]
+   }
+  ]
+ },
+ {
+  "num": 118,
+  "code": "71.62.58.548.01.04.030",
+  "type": "parking",
+  "label": "30",
+  "floor": "-1",
+  "area": 28.5,
+  "owners": [
+   {
+    "name_ka": "ხათუნა დანელია",
+    "name_en": "Khatuna Danelia",
+    "type": "person",
+    "ids": [
+     {
+      "kind": "P/N",
+      "value": "01024024038"
+     }
+    ]
+   }
+  ]
+ }
+]
