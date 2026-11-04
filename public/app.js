@@ -97,6 +97,7 @@
     if (r === 'admin/units') return renderUnits();
     if (r === 'admin/members') return renderMembers();
     if (r === 'admin/audit') return renderAudit();
+    if (r === 'admin/report') return renderReport();
     return go(isAdmin ? 'admin/overview' : 'me');
   }
 
@@ -180,15 +181,7 @@
     drawMe();
   }
 
-  function drawMe(successN) {
-    const me = S.me, doc = S.doc, c = doc?.document.content[S.lang];
-    const units = me.units;
-    const signedSet = new Set((doc?.signatures || []).map((s) => s.unitCode));
-    const left = units.filter((u) => !signedSet.has(u.code));
-    const p = pct(units.length - left.length, units.length);
-    const isOpen = doc?.document.status === 'open';
-
-    const docHtml = c ? `
+  const docBlock = (c) => `
       <article class="card card-pad doc stack gap-16" aria-labelledby="doc-title">
         <div class="doc-title"><span class="chip chip-info">${esc(t('me.document'))}</span><h2 id="doc-title">${esc(c.title)}</h2><p class="muted">${esc(c.summary)}</p></div>
         ${c.sections.map((s) => `
@@ -199,7 +192,17 @@
             ${s.demands ? `<div class="demands"><b>${esc(s.demands.title)}</b><ol>${s.demands.items.map((d) => `<li>${esc(d)}</li>`).join('')}</ol>${s.demands.after ? `<p class="small mt-8">${esc(s.demands.after)}</p>` : ''}</div>` : ''}
           </section>`).join('')}
         <div class="consent-box"><b>${esc(t('me.consentCheck'))}</b>${esc(c.consent)}</div>
-      </article>` : '';
+      </article>`;
+
+  function drawMe(successN) {
+    const me = S.me, doc = S.doc, c = doc?.document.content[S.lang];
+    const units = me.units;
+    const signedSet = new Set((doc?.signatures || []).map((s) => s.unitCode));
+    const left = units.filter((u) => !signedSet.has(u.code));
+    const p = pct(units.length - left.length, units.length);
+    const isOpen = doc?.document.status === 'open';
+
+    const docHtml = c ? docBlock(c) : '';
 
     const signHtml = !doc ? '' : !isOpen ? `<div class="alert alert-info m-sign">${esc(t('me.closed'))}</div>` : left.length === 0 ? `<div class="alert alert-ok m-sign">${esc(t('me.allSigned'))}</div>` : `
       <form class="card m-sign" id="sign-form" novalidate>
@@ -226,7 +229,8 @@
         <div><h1>${esc(t('me.hello', { name: name(me.user) }))}</h1><p class="muted mt-4">${esc(t('me.lead'))}</p>
           <div class="ids" aria-label="${esc(t('me.ids'))}">${me.user.ids.map((i) => `<span class="tag">${esc(i.kind)} ${esc(i.masked)}</span>`).join('')}</div></div>
         <div class="hero-progress"><b>${esc(t('me.progress', { signed: units.length - left.length, total: units.length }))}</b>
-          <div class="progress" role="progressbar" aria-valuenow="${Math.round(p)}" aria-valuemin="0" aria-valuemax="100"><span data-w="${p}"></span></div></div>
+          <div class="progress" role="progressbar" aria-valuenow="${Math.round(p)}" aria-valuemin="0" aria-valuemax="100"><span data-w="${p}"></span></div>
+          <button type="button" class="btn btn-sm no-print" data-action="print">${esc(t('pdf.button'))}</button></div>
       </section>
       ${successN ? `<div class="alert alert-ok" role="status">✓ ${esc(t('me.success', { n: successN }))}</div>` : ''}
       <div class="member-grid">
@@ -244,7 +248,18 @@
           </div></section>
         </div>
         ${docHtml}
-      </div>`;
+      </div>
+      <section class="print-only print-card">
+        <h2>${esc(t('pdf.myTitle'))}</h2>
+        <dl class="kv"><dt>${esc(t('adm.col.name'))}</dt><dd>${esc(name(me.user))}</dd>
+          <dt>${esc(t('me.ids'))}</dt><dd class="mono">${me.user.ids.map((i) => esc(i.kind + ' ' + i.masked)).join(', ')}</dd>
+          <dt>${esc(t('pdf.generated'))}</dt><dd>${esc(fmtDate(new Date().toISOString()))}</dd></dl>
+        <table class="data print-table"><thead><tr><th>${esc(t('adm.col.unit'))}</th><th>${esc(t('adm.col.code'))}</th><th class="r">${esc(t('adm.col.area'))}</th><th>${esc(t('adm.col.status'))}</th><th>${esc(t('me.pad'))}</th></tr></thead><tbody>
+          ${units.map((u) => { const sg = sigs.find((x) => x.unitCode === u.code); return `<tr><td>${esc(unitTitle(u))}, ${esc(floorText(u.floor))}</td><td class="mono xs">${esc(u.code)}</td><td class="r num">${esc(fmtNum(u.area, 2))}</td>
+            <td>${sg ? esc(t('status.signed')) + '<br><span class="xs">' + esc(fmtDate(sg.signedAt)) + '</span>' : esc(t('status.unsigned'))}</td>
+            <td>${sg ? `<img class="print-sig" src="/api/me/signatures/${encodeURIComponent(sg.id)}/image" alt="">` : ''}</td></tr>`; }).join('')}
+        </tbody></table>
+      </section>`;
     if ($('#sign-form')) wireSign(doc.document.id);
   }
 
@@ -316,7 +331,7 @@
     const bar = (label, a, b) => `<div class="bar-row"><span>${esc(label)}</span><div class="progress"><span data-w="${pct(a, b)}"></span></div><span class="num r small">${a}/${b}</span></div>`;
     $('#main').innerHTML = `
       <div class="page-head"><div><h1>${esc(t('adm.overviewTitle'))}</h1><p>${esc(t('app.address'))}</p></div>
-        <a class="btn" href="/api/admin/export.csv" download>${esc(t('adm.export'))}</a></div>
+        <div class="row"><a class="btn btn-primary" href="#admin/report">${esc(t('pdf.report'))}</a><a class="btn" href="/api/admin/export.csv" download>${esc(t('adm.export'))}</a></div></div>
       <div class="kpis">
         ${kpi(t('adm.kpiUnits'), `${ov.units.signed}<span class="muted small"> / ${ov.units.total}</span>`, `${fmtNum(pct(ov.units.signed, ov.units.total))}%`)}
         ${kpi(t('adm.kpiArea'), `${fmtNum(pct(ov.units.signedArea, ov.units.area))}%`, `${fmtNum(ov.units.signedArea, 1)} / ${fmtNum(ov.units.area, 1)} m²`)}
@@ -332,13 +347,64 @@
       </div>`;
   }
 
+  /* ---------- admin: printable report (PDF via the browser's print dialog) ---------- */
+  async function renderReport() {
+    shell(`<div class="empty">${esc(t('adm.loading'))}</div>`);
+    let ov, units, doc;
+    try {
+      [ov, units] = await Promise.all([api('GET', '/api/admin/overview'), api('GET', '/api/admin/units')]);
+      doc = ov.documentId ? await api('GET', '/api/me/documents/' + ov.documentId) : null;
+    } catch (ex) { $('#main').innerHTML = `<div class="alert alert-error">${esc(errText(ex.code))}</div>`; return; }
+    const c = doc?.document.content[S.lang];
+    const rows = units.units;
+    $('#main').innerHTML = `
+      <div class="page-head no-print"><div><h1>${esc(t('pdf.report'))}</h1><p>${esc(t('pdf.hint'))}</p></div>
+        <div class="row"><a class="btn" href="#admin/overview">${esc(t('pdf.back'))}</a><button type="button" class="btn btn-primary" data-action="print">${esc(t('pdf.button'))}</button></div></div>
+      <article class="card card-pad report stack gap-16">
+        <header class="report-head">
+          <div><b class="report-brand">${esc(t('app.name'))}</b><span class="muted small">${esc(t('app.address'))} · <span class="mono">71.62.58.548</span></span></div>
+          <div class="small muted r">${esc(t('pdf.generated'))}: ${esc(fmtDate(new Date().toISOString()))}</div>
+        </header>
+        <section class="report-summary">
+          <div><span class="k">${esc(t('adm.kpiUnits'))}</span><b>${ov.units.signed} / ${ov.units.total}</b></div>
+          <div><span class="k">${esc(t('adm.kpiArea'))}</span><b>${esc(fmtNum(pct(ov.units.signedArea, ov.units.area)))}%</b><span class="xs muted">${esc(fmtNum(ov.units.signedArea, 1))} / ${esc(fmtNum(ov.units.area, 1))} m²</span></div>
+          <div><span class="k">${esc(t('adm.kpiMembers'))}</span><b>${ov.persons.signed} / ${ov.persons.total}</b></div>
+        </section>
+        ${c ? docBlock(c) : ''}
+        <section class="page-break">
+          <h2>${esc(t('pdf.registry'))}</h2>
+          <p class="small muted">${esc(t('pdf.registrySub'))}</p>
+          <table class="data print-table"><thead><tr><th>№</th><th>${esc(t('adm.col.unit'))}</th><th>${esc(t('adm.col.code'))}</th><th class="r">${esc(t('adm.col.area'))}</th><th>${esc(t('adm.col.owners'))}</th><th>${esc(t('me.pad'))}</th></tr></thead><tbody>
+            ${rows.map((u) => `<tr>
+              <td class="num">${u.num}</td>
+              <td>${esc(unitTitle(u))}<br><span class="xs muted">${esc(floorText(u.floor))}</span></td>
+              <td class="mono xs">${esc(u.code)}</td>
+              <td class="r num">${esc(fmtNum(u.area, 2))}</td>
+              <td>${u.owners.map((o) => `<div>${esc(name(o))}${o.signedAt ? `<br><span class="xs">${esc(t('status.signed'))} · ${esc(fmtDate(o.signedAt))}</span>` : `<br><span class="xs muted">${esc(t('status.unsigned'))}</span>`}</div>`).join('')}</td>
+              <td>${u.owners.filter((o) => o.signatureId).map((o) => `<img class="print-sig" src="/api/admin/signatures/${encodeURIComponent(o.signatureId)}/image" alt="${esc(name(o))}" loading="eager">`).join('')}</td>
+            </tr>`).join('')}
+          </tbody></table>
+        </section>
+        <footer class="report-sign">
+          <div><span class="small muted">${esc(t('pdf.chair'))}</span><div class="sign-line"></div><span class="small">${esc(t('pdf.chairName'))}</span></div>
+          <div><span class="small muted">${esc(t('pdf.date'))}</span><div class="sign-line"></div></div>
+        </footer>
+      </article>`;
+  }
+
+  async function printPage() {
+    const imgs = $$('#main img');
+    await Promise.all(imgs.map((i) => (i.complete ? null : new Promise((r) => { i.onload = i.onerror = r; }))));
+    window.print();
+  }
+
   /* ---------- admin: units ---------- */
   const F = { units: { q: '', status: 'all', floor: 'all', type: 'all' }, members: { q: '', status: 'all' }, audit: { action: 'all', offset: 0 } };
 
   function renderUnits() {
     const f = F.units;
     shell(`
-      <div class="page-head"><div><h1>${esc(t('nav.units'))}</h1><p id="u-count" class="small"></p></div><a class="btn" href="/api/admin/export.csv" download>${esc(t('adm.export'))}</a></div>
+      <div class="page-head"><div><h1>${esc(t('nav.units'))}</h1><p id="u-count" class="small"></p></div><div class="row"><a class="btn btn-primary" href="#admin/report">${esc(t('pdf.report'))}</a><a class="btn" href="/api/admin/export.csv" download>${esc(t('adm.export'))}</a></div></div>
       <section class="card">
         <div class="card-head filters">
           <input class="input grow" id="u-q" type="search" placeholder="${esc(t('adm.search'))}" value="${esc(f.q)}" aria-label="${esc(t('adm.search'))}">
@@ -527,6 +593,7 @@
     if (ds.lang) { $('#toast').hidden = true; return setLang(ds.lang); }
     if (ds.action === 'logout') { $('#toast').hidden = true; try { await api('POST', '/api/auth/logout'); } catch (_) {} S.user = null; S.me = null; S.doc = null; return go('login'); }
     if (ds.action === 'close-drawer') return closeDrawer();
+    if (ds.action === 'print') return printPage();
     if (ds.person) return openPerson(Number(ds.person));
     if (ds.issue) {
       el.disabled = true;

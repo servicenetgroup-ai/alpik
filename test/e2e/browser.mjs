@@ -61,6 +61,12 @@ async function shot(name, full = true) {
   const r = await send('Page.captureScreenshot', { format: 'png', captureBeyondViewport: full });
   fs.writeFileSync(path.join(OUT, name + '.png'), Buffer.from(r.data, 'base64'));
 }
+async function pdf(name) {
+  const r = await send('Page.printToPDF', { printBackground: true, preferCSSPageSize: true });
+  const buf = Buffer.from(r.data, 'base64');
+  fs.writeFileSync(path.join(OUT, name + '.pdf'), buf);
+  return { bytes: buf.length, pages: (buf.toString('latin1').match(/\/Type\s*\/Page[^s]/g) || []).length };
+}
 async function open(hash = '') { await send('Page.navigate', { url: BASE + '/' + hash }); await sleep(400); }
 const noOverflow = () => evaluate('document.documentElement.scrollWidth <= window.innerWidth + 1');
 const setVal = (sel, v) => evaluate(`(() => { const el = document.querySelector(${JSON.stringify(sel)}); el.focus(); el.value = ${JSON.stringify(v)}; el.dispatchEvent(new Event('input', { bubbles: true })); return true; })()`);
@@ -133,6 +139,10 @@ try {
   // reload keeps session + language
   await open('#me');
   check('after reload signatures are still there', await waitFor(`document.querySelectorAll('.sig-item').length === 2`));
+  check('member page has a PDF button', await evaluate(`!!document.querySelector('[data-action="print"]')`));
+  await waitFor(`[...document.querySelectorAll('.print-sig')].every(i => i.complete && i.naturalWidth > 0)`);
+  const mp = await pdf('member-consent-ru');
+  check('member consent PDF is produced', mp.bytes > 20000 && mp.pages >= 2, `${mp.pages} pages, ${mp.bytes} bytes`);
   await logout();
 
   // ---- second member: desktop, EN, sees nothing of member 1
@@ -174,6 +184,14 @@ try {
   await open('#admin/audit');
   check('audit log lists sign-ins and signatures', await waitFor(`document.querySelector('#a-table').innerText.includes('Signed in') && document.querySelector('#a-table').innerText.includes('Signed')`));
   await shot('11-admin-audit-en-desktop');
+  await setLang('ka');
+  await open('#admin/report');
+  check('admin report shows all 118 units', await waitFor(`document.querySelectorAll('.print-table tbody tr').length === 118`, 8000));
+  check('report embeds the 2 signature images', await waitFor(`document.querySelectorAll('.print-table .print-sig').length === 2 && [...document.querySelectorAll('.print-sig')].every(i => i.complete && i.naturalWidth > 0)`, 8000));
+  await shot('14-admin-report-ka-desktop', false);
+  const rp = await pdf('admin-report-ka');
+  check('admin report PDF is produced', rp.bytes > 50000 && rp.pages >= 4, `${rp.pages} pages, ${rp.bytes} bytes`);
+  await setLang('en');
 
   // ---- admin mobile RU
   await viewport('mobile'); await setLang('ru');
